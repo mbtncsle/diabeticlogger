@@ -5,38 +5,38 @@ It does, however, take in the number of steps on a particular date and store tha
 '''
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QLabel, QLineEdit, QApplication, QPushButton, QDateEdit)
+from PyQt5.QtWidgets import *
 from datetime import datetime
 from functools import partial
+import window
 
-class Exercise(QWidget):
+class Exercise():
 
 	FILE_NAME = "log.txt"
 
 	def __init__(self):
-		super().__init__()
+		self.wind = window.Window(300, 300, 500, 300, "Exercise Window")
 		self.initUI()
 
 	def initUI(self):
 		# Create the labels
-		self.step_lbl = QLabel(self)
-		self.error_lbl = QLabel(self)
-		self.date_lbl = QLabel(self)
+		self.wind.addWidget("step_lbl", QLabel)
+		self.wind.addWidget("error_lbl", QLabel)
+		self.wind.addWidget("date_lbl", QLabel)
 
 		# Create the editing box
-		self.step_qle = QLineEdit(self)
+		self.wind.addWidget("step_qle", QLineEdit)
 
 		# Create the date box
-		self.date_qde = QDateEdit(self)
+		self.wind.addWidget("date_qde", QDateEdit)
 
 		# Create the submit button
-		self.qpb = QPushButton(self)
+		self.wind.addWidget("qpb", QPushButton)
 
 		# Create the numpad buttons
-		self.backspace = QPushButton(self)
-		self.numpad = []
+		self.wind.addWidget("backspace", QPushButton)
 		for i in range(0, 10):
-			self.numpad.append(QPushButton(self))
+			self.wind.addWidget(str(i), QPushButton)
 
 		'''
 		# Create the graph button
@@ -44,80 +44,72 @@ class Exercise(QWidget):
 		'''
 
 		# Move the labels and set their text
-		self.step_lbl.move(100, 80)
-		self.step_lbl.setText("Enter number of steps")
-		self.step_lbl.adjustSize()
-		self.error_lbl.move(100, 120)
-		self.date_lbl.move(300, 80)
-		self.date_lbl.setText("Enter date")
-		self.step_lbl.adjustSize()
+		self.wind.topLeftWindowAlign("step_lbl")
+		self.wind.setText("step_lbl", "Enter number of steps")
+		self.wind.topWindowAlign("error_lbl")
+		self.wind.toRight("step_lbl", "error_lbl")
+		self.wind.topWindowAlign("date_lbl")
+		self.wind.leftXAlign("date_lbl", self.wind.getWidget("error_lbl").pos().x() + self.wind.getWidget("error_lbl").width() * 2)
+		self.wind.setText("date_lbl", "Enter date")
 
 		# Move the editing box and setup the return signal
-		self.step_qle.move(100, 100)
-		self.step_qle.returnPressed.connect(self.submit)
+		self.wind.rightBelow("step_lbl", "step_qle")
+		self.wind.leftWidgetAlign("step_lbl", "step_qle")
+		self.wind.getWidget("step_qle").returnPressed.connect(self.submit)
 
 		# Move the date box and setup the format, popup and date
-		self.date_qde.move(300, 100)
-		self.date_qde.setDisplayFormat("MM/dd/yyyy")
-		self.date_qde.setCalendarPopup(True)
-		self.date_qde.setDate(datetime.now())
+		self.wind.rightBelow("date_lbl", "date_qde")
+		self.wind.leftWidgetAlign("date_lbl", "date_qde")
+		self.wind.getWidget("date_qde").setDisplayFormat("MM/dd/yyyy")
+		self.wind.getWidget("date_qde").setCalendarPopup(True)
+		self.wind.getWidget("date_qde").setDate(datetime.now())
 
 		# Move the submit button, set the text and prepare an event for when clicked
-		self.qpb.move(230, 120)
-		self.qpb.setText("Submit")
-		self.qpb.adjustSize()
-		self.qpb.clicked.connect(self.submit)
+		self.wind.rightBelow("date_qde", "qpb")
+		self.wind.leftWidgetAlign("date_qde", "qpb")
+		self.wind.setText("qpb", "Submit")
+		self.wind.getWidget("qpb").clicked.connect(self.submit)
 
 		# Move the numpad, set all the buttons' text and prepare events for being clicked
-		self.backspace.move(100, 270)
-		self.backspace.setText("Backspace")
-		self.backspace.adjustSize()
-		self.backspace.clicked.connect(self.delete)
-		default_x = 20
-		x = default_x
-		y = 150
-		for i in range(1, 11):
-			if i == 10:
-				i, x, y = 0, 100, 240
-			self.numpad[i].move(x, y)
-			self.numpad[i].setText(str(i))
-			self.numpad[i].adjustSize()
-			self.numpad[i].clicked.connect(partial(self.numbs, i))
-			if i == 0:
-				break
-			x += 80
-			if i % 3 == 0:
-				x = default_x
-				y += 30
-
-		'''
-		# Move the graphing button, set its text and prepare the event of being clicked
-		self.graph.move(60, 150)
-		self.graph.setText("Show Graph")
-		self.graph.adjustSize()
-		self.graph.clicked.connect(self.show_graph)
-		'''
+		for i in range(1, 10):
+			if i % 3 == 1:
+				self.wind.leftWindowAlign(str(i))
+			else:
+				self.wind.toRight(str(i - 1), str(i))
+			if i < 4:
+				self.wind.rightBelow("qpb", str(i))
+			else:
+				self.wind.rightBelow(str(i - 3), str(i))
+			self.wind.setText(str(i), str(i))
+			self.wind.getWidget(str(i)).clicked.connect(partial(self.numbs, i))
+		self.wind.leftWidgetAlign("8", "0")
+		self.wind.rightBelow("8", "0")
+		self.wind.setText("0", "0")
+		self.wind.getWidget("0").clicked.connect(partial(self.numbs, 0))
+		self.wind.leftWidgetAlign("0", "backspace")
+		self.wind.rightBelow("0", "backspace")
+		self.wind.setText("backspace", "Backspace")
+		self.wind.getWidget("backspace").clicked.connect(self.delete)
 
 		# Prepare the actual window
-		self.setGeometry(300, 300, 500, 300)
-		self.setWindowTitle("Exercise Window")
-		self.show()
+		self.wind.adjustSize()
+		self.wind.makeWindow()
 
 	# Function for entering numpad numbers into the text box
 	def numbs(self, number):
-		self.step_qle.setText(self.step_qle.text() + str(number))
+		self.wind.setText("step_qle", self.wind.getWidget("step_qle").text() + str(number))
 
 	# Function for deleting the last number
 	def delete(self):
-		string = self.step_qle.text()
+		string = self.wind.getWidget("step_qle").text()
 		if len(string) > 0:
-			self.step_qle.setText(string[:-1])
+			self.wind.setText("step_qle", string[:-1])
 
 	# Function for when the button was clicked
 	def submit(self):
 		# Get the text from the editing and date boxes
-		temp_steps = self.step_qle.text()
-		temp_date = self.date_qde.text()
+		temp_steps = self.wind.getWidget("step_qle").text()
+		temp_date = self.wind.getWidget("date_qde").text()
 		if len(temp_steps) == 0:
 			temp_steps = "0"
 		try:
@@ -125,8 +117,12 @@ class Exercise(QWidget):
 			steps = int(temp_steps)
 			date = datetime.strptime(temp_date, "%m/%d/%Y")
 			# If all is well then clear the error label and ready the file
-			self.error_lbl.setText("")
-			f = open(self.FILE_NAME, "r+")
+			self.wind.setText("error_lbl", "")
+			try:
+				f = open(self.FILE_NAME, "r+")
+			except Exception as e:
+				f = open(self.FILE_NAME, "a")
+				f = open(self.FILE_NAME, "r+")
 
 			# Find any entries already for this date
 			goLine = 0
@@ -150,8 +146,7 @@ class Exercise(QWidget):
 			f.close()
 		except Exception as e:
 			# If any issues arise then set the error label because it should only be caused by bad formatting in the editing boxes
-			self.error_lbl.setText("Error, incorrect input")
-			self.error_lbl.adjustSize()
+			self.wind.setText("error_lbl", "Error, incorrect input")
 
 # Start up the whole thing
 if __name__ == "__main__":
