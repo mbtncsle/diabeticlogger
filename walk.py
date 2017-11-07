@@ -6,6 +6,7 @@ It does, however, take in the number of steps on a particular date and store tha
 
 import sys
 from PyQt5.QtWidgets import *
+import matplotlib.pyplot as plt
 from datetime import datetime
 from functools import partial
 import window
@@ -16,6 +17,7 @@ class Exercise():
 
 	def __init__(self):
 		self.wind = window.Window(300, 300, 500, 300, "Exercise Window")
+		self.graphWind = window.Window(500, 500, 300, 300, "Exercise Graph")
 		self.initUI()
 
 	def initUI(self):
@@ -33,15 +35,13 @@ class Exercise():
 		# Create the submit button
 		self.wind.addWidget("qpb", QPushButton)
 
+		# Create the graphing button
+		self.wind.addWidget("graph", QPushButton)
+
 		# Create the numpad buttons
 		self.wind.addWidget("backspace", QPushButton)
 		for i in range(0, 10):
 			self.wind.addWidget(str(i), QPushButton)
-
-		'''
-		# Create the graph button
-		self.graph = QPushButton(self)
-		'''
 
 		# Move the labels and set their text
 		self.wind.topLeftWindowAlign("step_lbl")
@@ -70,6 +70,11 @@ class Exercise():
 		self.wind.setText("qpb", "Submit")
 		self.wind.getWidget("qpb").clicked.connect(self.submit)
 
+		# Move the graphing buttong, set the text and prepare an event for when clicked
+		self.wind.bottomRightWindowAlign("graph")
+		self.wind.setText("graph", "Show Graph")
+		self.wind.getWidget("graph").clicked.connect(self.graph)
+
 		# Move the numpad, set all the buttons' text and prepare events for being clicked
 		for i in range(1, 10):
 			if i % 3 == 1:
@@ -94,6 +99,30 @@ class Exercise():
 		# Prepare the actual window
 		self.wind.adjustSize()
 		self.wind.makeWindow()
+
+	# Function for showing a graph of data
+	def graph(self):
+		try:
+			f = open(self.FILE_NAME, "r")
+			tempSteps = dict()
+			dates = []
+			for line in f:
+				newLine = line.split(",")
+				tempSteps[newLine[1][:-1]] = int(newLine[0])
+				dates.append(datetime.strptime(newLine[1][:-1], "%m/%d/%Y"))
+			dates = sorted(dates)
+			steps = []
+			for d in dates:
+				steps.append(tempSteps[datetime.strftime(d, "%m/%d/%Y")])
+			stringDates = []
+			for d in dates:
+				stringDates.append(datetime.strftime(d, "%m/%d/%Y"))
+			plt.plot(stringDates, steps)
+			plt.ylabel("Number of steps")
+			plt.xlabel("Date")
+			plt.show()
+		except Exception as e:
+			self.wind.setText("error_lbl", "No data to graph")
 
 	# Function for entering numpad numbers into the text box
 	def numbs(self, number):
@@ -150,6 +179,6 @@ class Exercise():
 
 # Start up the whole thing
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ex = Exercise()
-    sys.exit(app.exec_())
+	app = QApplication(sys.argv)
+	ex = Exercise()
+	sys.exit(app.exec_())
