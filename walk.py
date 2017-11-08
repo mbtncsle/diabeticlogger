@@ -103,25 +103,37 @@ class Exercise():
 	# Function for showing a graph of data
 	def graph(self):
 		try:
+
+			# Open the file to read from
 			f = open(self.FILE_NAME, "r")
+
+			# Take each entry and split it into date and step counting lists (keep steps organized by date)
 			tempSteps = dict()
 			dates = []
 			for line in f:
 				newLine = line.split(",")
 				tempSteps[newLine[1][:-1]] = int(newLine[0])
 				dates.append(datetime.strptime(newLine[1][:-1], "%m/%d/%Y"))
+
+			# Sort the dates and appropriately sort the step counts with them
 			dates = sorted(dates)
 			steps = []
 			for d in dates:
 				steps.append(tempSteps[datetime.strftime(d, "%m/%d/%Y")])
+
+			# Change the dates into strings
 			stringDates = []
 			for d in dates:
 				stringDates.append(datetime.strftime(d, "%m/%d/%Y"))
+
+			# Create the line plot with dates as the x-axis and steps as the y-axis and label each axis appropriately
 			plt.plot(stringDates, steps)
 			plt.ylabel("Number of steps")
 			plt.xlabel("Date")
 			plt.show()
 		except Exception as e:
+
+			# If there is an issue it should be because the file does not exist
 			self.wind.setText("error_lbl", "No data to graph")
 
 	# Function for entering numpad numbers into the text box
