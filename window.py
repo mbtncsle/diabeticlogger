@@ -1,181 +1,138 @@
 import sys
 from PyQt5.QtWidgets import *
 
-class Window(QWidget):
+class Window():
 
 	# Setup the position, dimensions, title and widget array for the window
-	def __init__(self, x, y, width, height, title):
+	def __init__(self, width, height):
 		super().__init__()
-		self.windowX = x
-		self.windowY = y
 		self.windowWidth = width
 		self.windowHeight = height
-		self.windowTitle = title
-		self.widgets = dict()
-
-	# Add a widget of type widget to the window with the name name
-	def addWidget(self, name, widget):
-		self.widgets[name] = widget(self)
-
-	# Get the widget with the name name
-	def getWidget(self, name):
-		if name in self.widgets:
-			return self.widgets[name]
-		else:
-			return None
 
 	# Align a widget's left side with the left side of the window
-	def leftWindowAlign(self, name):
-		if name in self.widgets:
-			self.widgets[name].move(0, self.widgets[name].pos().y())
+	def leftWindowAlign(self, widget):
+		widget.move(0, widget.pos().y())
 
 	# Align a widget's right side with the right side of the window
-	def rightWindowAlign(self, name):
-		if name in self.widgets:
-			self.widgets[name].move(self.windowWidth - self.widgets[name].width(), self.widgets[name].pos().y())
+	def rightWindowAlign(self, widget):
+		widget.move(self.windowWidth - widget.width(), widget.pos().y())
 
 	# Align a widget's top with the top of the window
-	def topWindowAlign(self, name):
-		if name in self.widgets:
-			self.widgets[name].move(self.widgets[name].pos().x(), 0)
+	def topWindowAlign(self, widget):
+		widget.move(widget.pos().x(), 0)
 
 	# Align a widget's bottom with the bottom of the window
-	def bottomWindowAlign(self, name):
-		if name in self.widgets:
-			self.widgets[name].move(self.widgets[name].pos().x(), self.windowHeight - self.widgets[name].height())
+	def bottomWindowAlign(self, widget):
+		widget.move(widget.pos().x(), self.windowHeight - widget.height())
 
 	# Place a widget in the top left corner
-	def topLeftWindowAlign(self, name):
-		self.topWindowAlign(name)
-		self.leftWindowAlign(name)
+	def topLeftWindowAlign(self, widget):
+		self.topWindowAlign(widget)
+		self.leftWindowAlign(widget)
 
 	# Place a widget in the top right corner
-	def topRightWindowAlign(self, name):
-		self.topWindowAlign(name)
-		self.rightWindowAlign(name)
+	def topRightWindowAlign(self, widget):
+		self.topWindowAlign(widget)
+		self.rightWindowAlign(widget)
 
 	# Place a widget in the bottom left corner
-	def bottomLeftWindowAlign(self, name):
-		self.bottomWindowAlign(name)
-		self.leftWindowAlign(name)
+	def bottomLeftWindowAlign(self, widget):
+		self.bottomWindowAlign(widget)
+		self.leftWindowAlign(widget)
 
 	# Place a widget in the bottom right corner
-	def bottomRightWindowAlign(self, name):
-		self.bottomWindowAlign(name)
-		self.rightWindowAlign(name)
+	def bottomRightWindowAlign(self, widget):
+		self.bottomWindowAlign(widget)
+		self.rightWindowAlign(widget)
 
 	# Center a widget on the center width of the window
-	def centerXWindowAlign(self, name):
-		if name in self.widgets:
-			self.widgets[name].move(self.windowWidth / 2 - self.widgets[name].width() / 2, self.widgets[name].pos().y())
+	def centerXWindowAlign(self, widget):
+		widget.move(self.windowWidth / 2 - widget.width() / 2, widget.pos().y())
 
 	# Center a widget on the center height of the window
-	def centerYWindowAlign(self, name):
-		if name in self.widgets:
-			self.widgets[name].move(self.widgets[name].pos().x(), self.windowHeight / 2 - self.widgets[name].height() / 2)
+	def centerYWindowAlign(self, widget):
+		widget.move(widget.pos().x(), self.windowHeight / 2 - widget.height() / 2)
 
 	# Place the widget moving right above the widget still
 	def rightAbove(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[moving].pos().x(), self.widgets[still].pos().y() - self.widgets[moving].height())
+		moving.move(moving.pos().x(), still.pos().y() - moving.height())
 
 	# Place the widget moving right below the widget still
 	def rightBelow(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[moving].pos().x(), self.widgets[still].pos().y() + self.widgets[still].height())
+		moving.move(moving.pos().x(), still.pos().y() + still.height())
 
 	# Place the widget moving to the right of the widget still
 	def toRight(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[still].pos().x() + self.widgets[still].width(), self.widgets[moving].pos().y())
+		moving.move(still.pos().x() + still.width(), moving.pos().y())
 
 	# Place the widget moving to the left of the widget still
 	def toLeft(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[still].pos().x() - self.widgets[moving].width(), self.widgets[moving].pos().y())
+		moving.move(still.pos().x() - moving.width(), moving.pos().y())
 
 	# Align the left of moving with the left of still
 	def leftWidgetAlign(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[still].pos().x(), self.widgets[moving].pos().y())
+		moving.move(still.pos().x(), moving.pos().y())
 
 	# Align the right of moving with the right of still
 	def rightWidgetAlign(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[still].pos().x() - (self.widgets[moving].width() - self.widgets[still].width()), self.widgets[moving].pos().y())
+		moving.move(still.pos().x() - (moving.width() - still.width()), moving.pos().y())
 
 	# Align the top of moving with the top of still
 	def topWidgetAlign(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[moving].pos().x(), self.widgets[still].pos().y())
+		moving.move(moving.pos().x(), still.pos().y())
 
 	# Align the bottom of moving with the bottom of still
 	def bottomWidgetAlign(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[moving].pos().x(), self.widgets[still].pos().y() - (self.widgets[moving].height() - self.widgets[still].height()))
+		moving.move(moving.pos().x(), still.pos().y() - (moving.height() - still.height()))
 
 	# Align the center of the width of moving with the center of the width of still
 	def centerXWidgetAlign(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[still].pos().x() - (self.widgets[moving].width() / 2 - self.widgets[still].width() / 2), self.widgets[moving].pos().y())
+		moving.move(still.pos().x() - (moving.width() / 2 - still.width() / 2), moving.pos().y())
 
 	# Align the center of the height of moving with the center of the height of still
 	def centerYWidgetAlign(self, still, moving):
-		if still in self.widgets and moving in self.widgets:
-			self.widgets[moving].move(self.widgets[moving].pos().x(), self.widgets[still].pos().y() - (self.widgets[moving].height() / 2 - self.widgets[still].height() / 2))
+		moving.move(moving.pos().x(), still.pos().y() - (moving.height() / 2 - still.height() / 2))
 
 	# Place the center of the height of name at the yValue
-	def centerYAlign(self, name, yValue):
-		if name in self.widgets:
-			self.widgets[name].move(self.widgets[name].pos().x(), yValue - self.widgets[name].height() / 2)
+	def centerYAlign(self, widget, yValue):
+		widget.move(widget.pos().x(), yValue - widget.height() / 2)
 
 	# Place the center of the width of name at the xValue
-	def centerXAlign(self, name, xValue):
-		if name in self.widgets:
-			self.widgets[name].move(xValue - self.widgets[name].width() / 2, self.widgets[name].pos().y())
+	def centerXAlign(self, widget, xValue):
+		widget.move(xValue - widget.width() / 2, widget.pos().y())
 
 	# Place the top of name at the yValue
-	def topYAlign(self, name, yValue):
-		if name in self.widgets:
-			self.widgets[name].move(self.widgets[name].pos().x(), yValue)
+	def topYAlign(self, widget, yValue):
+		widget.move(widget.pos().x(), yValue)
 
 	# Place the left of name at the xValue
-	def leftXAlign(self, name, xValue):
-		if name in self.widgets:
-			self.widgets[name].move(xValue, self.widgets[name].pos().y())
+	def leftXAlign(self, widget, xValue):
+		widget.move(xValue, widget.pos().y())
 
 	# Place the bottom of name at the yValue
-	def bottomYAlign(self, name, yValue):
-		if name in self.widgets:
-			self.widgets[name].move(self.widgets[name].pos().x(), yValue - self.widgets[name].height())
+	def bottomYAlign(self, widget, yValue):
+		widget.move(widget.pos().x(), yValue - widget.height())
 
 	# Place the right of name at the xValue
-	def rightXAlign(self, name, xValue):
-		if name in self.widgets:
-			self.widgets[name].move(xValue - self.widgets[name].width(), self.widgets[name].pos().y())
+	def rightXAlign(self, widget, xValue):
+		widget.move(xValue - widget.width(), widget.pos().y())
 
 	# Set the text of name (takes care of adjusting the size)
-	def setText(self, name, text):
-		if name in self.widgets:
-			self.widgets[name].setText(text)
-			self.widgets[name].adjustSize()
+	def setText(self, widget, text):
+		widget.setText(text)
+		widget.adjustSize()
 
 	# Adjust the size of the window to fit the widgets
-	def adjustSize(self):
+	def adjustSize(self, widgets):
 		maxX = 0
 		maxY = 0
-		for i in self.widgets:
-			x = self.widgets[i].pos().x() + self.widgets[i].width()
-			y = self.widgets[i].pos().y() + self.widgets[i].height()
+		for i in widgets:
+			x = widgets[i].pos().x() + widgets[i].width()
+			y = widgets[i].pos().y() + widgets[i].height()
 			if x > maxX:
 				maxX = x
 			if y > maxY:
 				maxY = y
 		self.windowWidth = maxX
 		self.windowHeight = maxY
-
-	# Display the window (note: only do this once all widgets are prepared)
-	def makeWindow(self):
-		self.setGeometry(self.windowX, self.windowY, self.windowWidth, self.windowHeight)
-		self.setWindowTitle(self.windowTitle)
-		self.show()
+		return maxX, maxY

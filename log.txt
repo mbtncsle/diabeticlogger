@@ -11,3 +11,5 @@ One roadblock that came when programming the combobox was figuring out how to gr
 Another roadblock was attempting to log the data using a button class. The issue found was the class used for the button, would never update the actual carb value of the food the user may have chosen. At the same time, the class called handleActivated, that is related to the combobox, would update the carb values based on just the selection the user had chosen. After extensively trying to get the button implementation to work, it was easier to apply the data log into the handleActiviated class since it updated the carb values in real time. 
 
 At this point in time, the combobox allows the users to select a pre-made food option, that also lists the general amount of carbs for that meal, and takes that data and stores it into a log file. This will allows us to some sort of data structure to obtain all the information from the log files and use that to create a graphical representation for the user to see if his or her blood glucose levels are to high or low.
+8,11/12/2017
+9,11/13/2017
