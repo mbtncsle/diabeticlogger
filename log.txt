@@ -1,0 +1,13 @@
+12
+
+
+After meeting with the group and Dr Yu on Saturday November 6, the team decided to change the framework environment to a GUI based language. Since the team decided this would allow for a much simpler and easier implementation, the group spent the rest of the meeting deciding on the framework and going through some tutorials. 
+
+The Team decided to continue using python3 but went with the framework PyQt5 which allows for GUI implementations. This required everyone to install and set up the framework environment and start getting an understanding of PyQt5. Installation was super simple, but learning and understanding PyQt5, speaking for myself took a second to understand. After going through some tutorials, looking over examples, and trying out code the framework became easier to use.
+To start the process the acceptance criteria, a group discussion was constructed on how the food should be logged. The group decided on creating a basic list, for now, and logging a general intake of carbs based on the food the user as eaten. This required an understand of dropdown boxs in PyQt5 which are referenced as comboboxs. After understanding and working with comboboxes program, it became very simple to modify the values needed for the project implementation
+
+One roadblock that came when programming the combobox was figuring out how to grab the data based on the food chosen by the user. After some research, a combo box was able to be manipulated by having a Text and a Data section. This allowed to split up what the user sees and the number the group needed for the algorithm. It then became very easy to grab the data initialized based on the option the user chose.
+
+Another roadblock was attempting to log the data using a button class. The issue found was the class used for the button, would never update the actual carb value of the food the user may have chosen. At the same time, the class called handleActivated, that is related to the combobox, would update the carb values based on just the selection the user had chosen. After extensively trying to get the button implementation to work, it was easier to apply the data log into the handleActiviated class since it updated the carb values in real time. 
+
+At this point in time, the combobox allows the users to select a pre-made food option, that also lists the general amount of carbs for that meal, and takes that data and stores it into a log file. This will allows us to some sort of data structure to obtain all the information from the log files and use that to create a graphical representation for the user to see if his or her blood glucose levels are to high or low.
