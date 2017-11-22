@@ -1,61 +1,80 @@
+from PyQt5.QtWidgets import QMdiArea, QApplication, QPushButton, QMainWindow, QAction
+from PyQt5.QtCore import Qt
 import sys
-from PyQt5.QtWidgets import *
-import matplotlib.pyplot as plt
-from datetime import datetime
-from functools import partial
-import window
-import exercise
+from InputWindow import InputWindow
 
-class MainWindow():
+class MainWindow(QMainWindow):
 
-	def __init__(self, gui):
+	def __init__(self):
+		super(MainWindow, self).__init__(parent = None)
 
-		# Preparing variables
-		self.gui = gui
-		self.x = 300
-		self.y = 300
-		self.width = 500
-		self.height = 300
-		self.title = "Main Window"
-		self.wind = window.Window(self.width, self.height)
-		self.guis = {"exercise": QDialog(self.gui)}
-		self.windows = {"exercise": exercise.Exercise("log.txt", 300, 300, self.guis["exercise"])}
-		self.widgets = dict()
-		self.initUI()
+		# Global variables
+		self.blood_glucose = "BG"
+		self.food_intake = "Food"
+		self.sleep_hours = "Sleep"
+		self.walk_steps = "Walk"
 
-	def initUI(self):
+		self.window_width = 1200
+		self.window_height = 700
 
-		# Create the drop down list of other windows
-		self.widgets["accessWindows"] = QComboBox(self.gui)
-		self.widgets["accessWindows"].addItem("None")
-		for i in self.windows:
-			self.widgets["accessWindows"].addItem(i.title() + " Window")
-		self.widgets["accessWindows"].currentIndexChanged.connect(self.callGui)
-		self.wind.topLeftWindowAlign(self.widgets["accessWindows"])
+		self.margin = 50
 
-		# Create and prepare the simple a1c viewer
-		self.widgets["a1c"] = QLabel(self.gui)
-		self.wind.setText(self.widgets["a1c"], "Your current A1C is ") # Note: implement a1c calculation
-		self.wind.topWindowAlign(self.widgets["a1c"])
-		self.widgets["a1c"].move(200, 0)
+		self.sub_window_width = (self.window_width - self.margin) / 2
+		self.sub_window_height = (self.window_height - self.margin) / 2
 
-		# Setup this window
-		#self.width, self.height = self.wind.adjustSize(self.widgets)
-		self.gui.setGeometry(self.x, self.y, self.width, self.height)
-		self.gui.setWindowTitle(self.title)
-		self.gui.show()
+		# Prepare the main area
+		self.mdi = QMdiArea()
+		self.setCentralWidget(self.mdi)
 
-	# Function to open another window and reshow this one once that is closed
-	def callGui(self):
-		if self.widgets["accessWindows"].currentText() != "None":
-			self.gui.setVisible(False)
-			self.guis[self.widgets["accessWindows"].currentText()[:-7].lower()].exec()
-			self.widgets["accessWindows"].setCurrentIndex(0)
-			self.gui.setVisible(True)
+		# Prepare the toolbar
+		self.toolbar = self.addToolBar("Toolbar")
+		self.toolbar.setMovable(False)
 
-# Start up the whole thing
-if __name__ == "__main__":
-	app = QApplication(sys.argv)
-	mainGui = QDialog()
-	ex = MainWindow(mainGui)
-	sys.exit(app.exec_())
+		# Create each toolbar action
+		actions = [QAction("Blood Glucose", self),
+		QAction("Food Intake", self),
+		QAction("Hours of Sleep", self),
+		QAction("Steps Walked", self),
+		QAction("Notifications", self),
+		QAction("Graph of all data", self)
+		]
+
+		# Setup the toolbar and actions
+		for i in actions:
+			self.toolbar.addAction(i)
+			self.toolbar.insertSeparator(i)
+		self.toolbar.insertSeparator(None)
+
+		# Create each of the sub windows
+		self.input_windows = {self.blood_glucose: InputWindow(), self.food_intake: InputWindow(), self.sleep_hours: InputWindow(), self.walk_steps: InputWindow()}
+		self.graph_windows = {self.blood_glucose: InputWindow(), self.food_intake: InputWindow(), self.sleep_hours: InputWindow(), self.walk_steps: InputWindow()}
+		self.recommended_windows = {self.blood_glucose: InputWindow(), self.food_intake: InputWindow(), self.sleep_hours: InputWindow(), self.walk_steps: InputWindow()}
+		self.log_windows = {self.blood_glucose: InputWindow(), self.food_intake: InputWindow(), self.sleep_hours: InputWindow(), self.walk_steps: InputWindow()}
+
+		# Hide everything but the blood glucose and add it all to the main window
+		for k in self.input_windows:
+			self.mdi.addSubWindow(self.input_windows[k])
+			self.mdi.addSubWindow(self.graph_windows[k])
+			self.mdi.addSubWindow(self.recommended_windows[k])
+			self.mdi.addSubWindow(self.log_windows[k])
+			self.input_windows[k].add_widget(QPushButton(), 0, 0)
+			self.input_windows[k].make_window()
+			self.graph_windows[k].make_window()
+			self.recommended_windows[k].make_window()
+			self.log_windows[k].make_window()
+			self.input_windows[k].setGeometry(0, 0, self.sub_window_width, self.sub_window_height)
+			self.graph_windows[k].setGeometry(self.window_width - self.sub_window_width, 0, self.sub_window_width, self.sub_window_height)
+			self.recommended_windows[k].setGeometry(0, self.window_height - self.sub_window_height, self.sub_window_width, self.sub_window_height)
+			self.log_windows[k].setGeometry(self.window_width - self.sub_window_width, self.window_height - self.sub_window_height, self.sub_window_width, self.sub_window_height)
+			if k != self.blood_glucose:
+				self.input_windows[k].setVisible(False)
+				self.graph_windows[k].setVisible(False)
+				self.recommended_windows[k].setVisible(False)
+				self.log_windows[k].setVisible(False)
+
+		self.setGeometry(100, 30, self.window_width, self.window_height)
+		self.show()
+
+app = QApplication(sys.argv)
+inp = MainWindow()
+sys.exit(app.exec_())
