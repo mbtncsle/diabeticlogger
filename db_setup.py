@@ -34,7 +34,7 @@ def create_database():
     server_name = "t14000420144353\SQLExpress"
     db_name = "DiabeticLogger"
     user_id = "sa"
-    password = "Se47nw##"
+    password = "[Your sap password goes here]"
 
     connection_string = "DRIVER={SQL Server Native Client 11.0};"
     connection_string = connection_string + "SERVER=" + server_name + ";"
