@@ -15,10 +15,10 @@ class Db:
         db_name = "DiabeticLogger"
 
         connection_string = "DRIVER={SQL Server Native Client 11.0};"
-        connection_string = connection_string + "SERVER=" + server_name + ";"
-        connection_string = connection_string + "DATABASE=" + db_name + ";"
-        connection_string = connection_string + "UID=sa;"
-        connection_string = connection_string + "PWD=Se47nw##"
+        connection_string += "SERVER=" + server_name + ";"
+        connection_string += "DATABASE=" + db_name + ";"
+        connection_string += "UID=sa;"
+        connection_string += "[SQL Server sa password goes here]"
 
         try:
             self.__connection = pyodbc.connect(connection_string, autocommit=True)
