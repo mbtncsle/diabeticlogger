@@ -33,13 +33,13 @@ def meal_insert(meal_record):
     """
 
     sql_statement = "INSERT INTO " + table_name + " (Meal, Reading, RecordDate, Notes) OUTPUT INSERTED."
-    sql_statement = sql_statement + table_name + "Id"
-    sql_statement = sql_statement + " VALUES ("
-    sql_statement = sql_statement + "'" + str(meal_record.meal) + "', "
-    sql_statement = sql_statement + str(meal_record.reading) + ", "
-    sql_statement = sql_statement + "'" + meal_record.record_date.strftime("%Y-%m-%d %H:%M:%S") + "', "
-    sql_statement = sql_statement + "'" + str(meal_record.notes) + "'"
-    sql_statement = sql_statement + ");"
+    sql_statement += table_name + "Id"
+    sql_statement += " VALUES ("
+    sql_statement += "'" + str(meal_record.meal) + "', "
+    sql_statement += str(meal_record.reading) + ", "
+    sql_statement += "'" + meal_record.record_date.strftime("%Y-%m-%d %H:%M:%S") + "', "
+    sql_statement += "'" + str(meal_record.notes) + "'"
+    sql_statement += ");"
 
     # Insert the meal record
     with db.Db() as cursor:
@@ -47,7 +47,7 @@ def meal_insert(meal_record):
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         return_id = cursor.fetchone()[0]
 
@@ -75,7 +75,7 @@ def meal_select_by_id(meal_id):
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         row = cursor.fetchone()
 
@@ -102,14 +102,14 @@ def meal_select_by_days(days):
 
     sql_statement = "SELECT " + table_name + "Id, Meal, Reading, RecordDate, Notes" + \
                     " FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate DESC ;".format(
-                        oldest_date.strftime("%Y-%m-%d %H:%M:%S"))
+                        oldest_date.strftime("%Y-%m-%d 00:00:00"))
 
     with db.Db() as cursor:
         try:
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         return_meal_records = []
         row = cursor.fetchone()
@@ -143,6 +143,7 @@ def meal_delete(meal_id):
 
     with db.Db() as cursor:
         try:
-            cursor.execute(sql_statement)
+            return cursor.execute(sql_statement).rowcount
         except pyodbc.Error as ex:
             print(ex.args)
+            return 0
