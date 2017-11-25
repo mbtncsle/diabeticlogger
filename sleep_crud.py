@@ -115,7 +115,7 @@ def sleep_delete(sleep_id):
     """
     Deletes a sleep record based on SleepId
     :param sleep_id: SleepId of record
-    :return: Nothing is returned
+    :return: row count is returned
     """
 
     sql_statement = "DELETE FROM " + table_name + " WHERE " + table_name + "Id = " + str(sleep_id) + ";"

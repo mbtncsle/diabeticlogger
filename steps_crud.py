@@ -30,8 +30,8 @@ def steps_insert(steps_record):
     sql_statement += table_name + "Id"
     sql_statement += " VALUES ("
     sql_statement += str(steps_record.reading) + ", "
-    sql_statement += steps_record.record_date.strftime("%Y-%m-%d %H:%M:%S") + "', "
-    sql_statement += str(steps_record.notes) + "'"
+    sql_statement += "'" + steps_record.record_date.strftime("%Y-%m-%d %H:%M:%S") + "', "
+    sql_statement += "'" + str(steps_record.notes) + "'"
     sql_statement += ");"
 
     with db.Db() as cursor:
@@ -39,7 +39,7 @@ def steps_insert(steps_record):
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return None
+            return sql_statement
 
         return_id = cursor.fetchone()[0]
         return return_id
@@ -116,7 +116,7 @@ def steps_delete(steps_id):
     """
     Deletes a steps record based on StepsId
     :param steps_id: StepsId of record
-    :return: Nothing is returned
+    :return: row count is returned
     """
 
     sql_statement = "DELETE FROM " + table_name + " WHERE " + table_name + "Id = " + str(steps_id) + ";"

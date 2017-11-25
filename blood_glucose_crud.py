@@ -119,7 +119,7 @@ def blood_glucose_delete(blood_glucose_id):
     """
     Deletes a blood glucose record based on BloodGlucoseId
     :param blood_glucose_id: BloodGlucoseId of record
-    :return: Nothing is returned
+    :return: row count is returned
     """
 
     sql_statement = "DELETE FROM " + table_name + " WHERE " + table_name + "Id = " + str(blood_glucose_id) + ";"

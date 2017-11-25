@@ -1,9 +1,9 @@
 import datetime
-import steps_crud
+import sleep_crud
 
 
 # =============================================================================
-# Tests to determine if a Steps record can be inserted and then
+# Tests to determine if a Sleep record can be inserted and then
 # retrieved by id
 # Acceptance Criteria for DIAB-125
 #       A record is inserted into the database with specific values
@@ -13,7 +13,7 @@ import steps_crud
 def test_insert():
 
     # Specific values
-    reading = 2500
+    reading = 8.5
 
     # The code below converts datetime stamps to Microsoft SQL Server specific values
     # and then convert it back for comparison to the retrieved value from Microsoft SQL Server
@@ -23,28 +23,26 @@ def test_insert():
     notes = "test_insert unit test record at " + str(record_date)
 
     # Insert the record
-    inserted_id = steps_crud.steps_insert(
-        steps_crud.StepsRecord(
+    inserted_id = sleep_crud.sleep_insert(
+        sleep_crud.SleepRecord(
             reading=reading,
             record_date=record_date,
             notes=notes
         )
     )
 
-    assert inserted_id > 0
-
     # Retrieve the record
-    retrieved_record = steps_crud.steps_select_by_id(inserted_id)
+    retrieved_record = sleep_crud.sleep_select_by_id(inserted_id)
 
     # Perform tests
-    assert retrieved_record.steps_id == inserted_id
+    assert retrieved_record.sleep_id == inserted_id
     assert retrieved_record.reading == reading
     assert retrieved_record.record_date == record_date
     assert retrieved_record.notes == notes
 
 
 # =============================================================================
-# Tests to determine if a Steps records be retrieved for the past
+# Tests to determine if sleep records can be retrieved for the past
 # number of days
 # Acceptance Criteria for
 # =============================================================================
@@ -54,7 +52,7 @@ def test_select_by_days():
     days = 3
 
     # Retrieve the records
-    record_list = steps_crud.steps_select_by_days(days=days)
+    record_list = sleep_crud.sleep_select_by_days(days=days)
 
     # This is done to correctly format the date time for use with Microsoft SQL Server
     oldest_date = datetime.datetime.today() - datetime.timedelta(days=days)
@@ -68,7 +66,7 @@ def test_select_by_days():
 
 
 # =============================================================================
-# Tests to determine if a Steps record is deleted
+# Tests to determine if a sleep record is deleted
 # Acceptance Criteria for
 # =============================================================================
 def test_delete():
@@ -84,8 +82,8 @@ def test_delete():
     notes = "test_delete unit test record at " + str(record_date)
 
     # Insert the record
-    inserted_id = steps_crud.steps_insert(
-        steps_crud.StepsRecord(
+    inserted_id = sleep_crud.sleep_insert(
+        sleep_crud.SleepRecord(
             reading=reading,
             record_date=record_date,
             notes=notes
@@ -96,13 +94,14 @@ def test_delete():
     assert inserted_id != 0
 
     # Retrieve the record and test that it was the same as the one inserted
-    retrieved_record = steps_crud.steps_select_by_id(inserted_id)
-    assert retrieved_record.steps_id == inserted_id
+    retrieved_record = sleep_crud.sleep_select_by_id(inserted_id)
+    assert retrieved_record.sleep_id == inserted_id
 
     # Test that 1 record and only 1 is deleted
-    deleted_rows = steps_crud.steps_delete(inserted_id)
+    deleted_rows = sleep_crud.sleep_delete(inserted_id)
     assert deleted_rows == 1
 
     # Test that no record is deleted when we have already deleted it
-    deleted_rows = steps_crud.steps_delete(inserted_id)
+    deleted_rows = sleep_crud.sleep_delete(inserted_id)
     assert deleted_rows == 0
+

@@ -134,16 +134,16 @@ def meal_delete(meal_id):
     """
     Deletes a meal record and the associated meal item records based on MealId
     :param meal_id: MealId of record
-    :return: Nothing is returned
+    :return: row count is returned
     """
 
     # Delete the associated meal item records
-    meal_item_crud.meal_item_delete_by_meal_id(meal_id)
+    deleted_meal_item_count = meal_item_crud.meal_item_delete_by_meal_id(meal_id)
     sql_statement = "DELETE FROM " + table_name + " WHERE " + table_name + "Id = " + str(meal_id) + ";"
 
     with db.Db() as cursor:
         try:
-            return cursor.execute(sql_statement).rowcount
+            return cursor.execute(sql_statement).rowcount + deleted_meal_item_count
         except pyodbc.Error as ex:
             print(ex.args)
             return 0

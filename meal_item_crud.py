@@ -140,7 +140,7 @@ def meal_item_delete_by_meal_id(meal_id):
     """
     Deletes all meal item records for the associated MealId
     :param meal_id: MealId of record
-    :return: Nothing is returned
+    :return: row count is returned
     """
 
     sql_statement = "DELETE FROM " + table_name + " WHERE MealId = " + str(meal_id) + ";"
