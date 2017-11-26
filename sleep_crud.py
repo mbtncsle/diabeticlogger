@@ -27,19 +27,19 @@ def sleep_insert(sleep_record):
     """
 
     sql_statement = "INSERT INTO " + table_name + " (Reading, RecordDate, Notes) OUTPUT INSERTED."
-    sql_statement = sql_statement + table_name + "Id"
-    sql_statement = sql_statement + " VALUES ("
-    sql_statement = sql_statement + str(sleep_record.reading) + ", "
-    sql_statement = sql_statement + "'" + sleep_record.record_date.strftime("%Y-%m-%d %H:%M:%S") + "', "
-    sql_statement = sql_statement + "'" + str(sleep_record.notes) + "'"
-    sql_statement = sql_statement + ");"
+    sql_statement += table_name + "Id"
+    sql_statement += " VALUES ("
+    sql_statement += str(sleep_record.reading) + ", "
+    sql_statement += "'" + sleep_record.record_date.strftime("%Y-%m-%d %H:%M:%S") + "', "
+    sql_statement += "'" + str(sleep_record.notes) + "'"
+    sql_statement += ");"
 
     with db.Db() as cursor:
         try:
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         return_id = cursor.fetchone()[0]
         return return_id
@@ -60,7 +60,7 @@ def sleep_select_by_id(sleep_id):
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         row = cursor.fetchone()
 
@@ -85,14 +85,14 @@ def sleep_select_by_days(days):
 
     sql_statement = "SELECT " + table_name + "Id, Reading, RecordDate, Notes" + \
                     " FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate DESC ;".format(
-                        oldest_date.strftime("%Y-%m-%d %H:%M:%S"))
+                        oldest_date.strftime("%Y-%m-%d 00:00:00"))
 
     with db.Db() as cursor:
         try:
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         return_sleep_records = []
         row = cursor.fetchone()
@@ -115,15 +115,14 @@ def sleep_delete(sleep_id):
     """
     Deletes a sleep record based on SleepId
     :param sleep_id: SleepId of record
-    :return: Nothing is returned
+    :return: row count is returned
     """
 
     sql_statement = "DELETE FROM " + table_name + " WHERE " + table_name + "Id = " + str(sleep_id) + ";"
 
     with db.Db() as cursor:
         try:
-            cursor.execute(sql_statement)
+            return cursor.execute(sql_statement).rowcount
         except pyodbc.Error as ex:
             print(ex.args)
-
-
+            return 0

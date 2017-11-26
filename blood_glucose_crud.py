@@ -27,20 +27,20 @@ def blood_glucose_insert(blood_glucose_record):
     :return: BloodGlucoseId of inserted record
     """
     sql_statement = "INSERT INTO " + table_name + " (Meal, Reading, RecordDate, Notes) OUTPUT INSERTED."
-    sql_statement = sql_statement + table_name + "Id"
-    sql_statement = sql_statement + " VALUES ("
-    sql_statement = sql_statement + "'" + str(blood_glucose_record.meal) + "', "
-    sql_statement = sql_statement + str(blood_glucose_record.reading) + ", "
-    sql_statement = sql_statement + "'" + str(blood_glucose_record.record_date) + "', "
-    sql_statement = sql_statement + "'" + str(blood_glucose_record.notes) + "'"
-    sql_statement = sql_statement + ");"
+    sql_statement += table_name + "Id"
+    sql_statement += " VALUES ("
+    sql_statement += "'" + str(blood_glucose_record.meal) + "', "
+    sql_statement += str(blood_glucose_record.reading) + ", "
+    sql_statement += "'" + str(blood_glucose_record.record_date.strftime("%Y-%m-%d %H:%M:%S")) + "', "
+    sql_statement += "'" + str(blood_glucose_record.notes) + "'"
+    sql_statement += ");"
 
     with db.Db() as cursor:
         try:
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         return_id = cursor.fetchone()[0]
         return return_id
@@ -62,7 +62,7 @@ def blood_glucose_select_by_id(blood_glucose_id):
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         row = cursor.fetchone()
 
@@ -88,14 +88,14 @@ def blood_glucose_select_by_days(days):
 
     sql_statement = "SELECT " + table_name + "Id, Meal, Reading, RecordDate, Notes" + \
                     " FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate DESC ;".format(
-                        oldest_date.strftime("%Y-%m-%d %H:%M:%S"))
+                        oldest_date.strftime("%Y-%m-%d 00:00:00"))
 
     with db.Db() as cursor:
         try:
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return
+            return None
 
         return_blood_glucose_records = []
         row = cursor.fetchone()
@@ -119,13 +119,14 @@ def blood_glucose_delete(blood_glucose_id):
     """
     Deletes a blood glucose record based on BloodGlucoseId
     :param blood_glucose_id: BloodGlucoseId of record
-    :return: Nothing is returned
+    :return: row count is returned
     """
 
     sql_statement = "DELETE FROM " + table_name + " WHERE " + table_name + "Id = " + str(blood_glucose_id) + ";"
 
     with db.Db() as cursor:
         try:
-            cursor.execute(sql_statement)
+            return cursor.execute(sql_statement).rowcount
         except pyodbc.Error as ex:
             print(ex.args)
+            return None

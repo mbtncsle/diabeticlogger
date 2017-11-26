@@ -26,6 +26,7 @@ def setup():
     create_meal_table()
     create_meal_items_table()
     populate_meal_tables()
+    create_recommendation_table()
 
 
 def create_database():
@@ -34,13 +35,13 @@ def create_database():
     server_name = "t14000420144353\SQLExpress"
     db_name = "DiabeticLogger"
     user_id = "sa"
-    password = "[Your sap password goes here]"
+    password = "[Put sa password here]"
 
     connection_string = "DRIVER={SQL Server Native Client 11.0};"
-    connection_string = connection_string + "SERVER=" + server_name + ";"
-    connection_string = connection_string + "DATABASE=master;"
-    connection_string = connection_string + "UID=" + user_id + ";"
-    connection_string = connection_string + "PWD=" + password
+    connection_string += "SERVER=" + server_name + ";"
+    connection_string += "DATABASE=master;"
+    connection_string += "UID=" + user_id + ";"
+    connection_string += "PWD=" + password
 
     create_sql_statement = "CREATE DATABASE " + db_name + ";"
     drop_sql_statement = "DROP DATABASE " + db_name + ";"
@@ -77,8 +78,8 @@ def create_sleep_table():
         "PRIMARY KEY CLUSTERED([SleepId] ASC)"
     ]
     create_sql_statement = "CREATE TABLE " + table_name + "("
-    create_sql_statement = create_sql_statement + ", ".join(field_list)
-    create_sql_statement = create_sql_statement + ");"
+    create_sql_statement += ", ".join(field_list)
+    create_sql_statement += ");"
 
     drop_sql_statement = "DROP TABLE " + table_name + ";"
 
@@ -108,8 +109,8 @@ def create_steps_table():
         "PRIMARY KEY CLUSTERED([StepsId] ASC)"
     ]
     create_sql_statement = "CREATE TABLE " + table_name + "("
-    create_sql_statement = create_sql_statement + ", ".join(field_list)
-    create_sql_statement = create_sql_statement + ");"
+    create_sql_statement += ", ".join(field_list)
+    create_sql_statement += ");"
 
     drop_sql_statement = "DROP TABLE " + table_name + ";"
 
@@ -141,8 +142,8 @@ def create_blood_glucose_table():
         "PRIMARY KEY CLUSTERED([BloodGlucoseId] ASC)"
     ]
     create_sql_statement = "CREATE TABLE " + table_name + "("
-    create_sql_statement = create_sql_statement + ", ".join(field_list)
-    create_sql_statement = create_sql_statement + ");"
+    create_sql_statement += ", ".join(field_list)
+    create_sql_statement += ");"
 
     drop_sql_statement = "DROP TABLE " + table_name + ";"
 
@@ -191,8 +192,8 @@ def create_meal_table():
         "PRIMARY KEY CLUSTERED([MealId] ASC)"
     ]
     create_sql_statement = "CREATE TABLE " + table_name + "("
-    create_sql_statement = create_sql_statement + ", ".join(field_list)
-    create_sql_statement = create_sql_statement + ");"
+    create_sql_statement += ", ".join(field_list)
+    create_sql_statement += ");"
 
     drop_sql_statement = "DROP TABLE " + table_name + ";"
 
@@ -213,8 +214,8 @@ def create_meal_items_table():
         "PRIMARY KEY CLUSTERED([MealItemId] ASC)"
     ]
     create_sql_statement = "CREATE TABLE " + table_name + "("
-    create_sql_statement = create_sql_statement + ", ".join(field_list)
-    create_sql_statement = create_sql_statement + ");"
+    create_sql_statement += ", ".join(field_list)
+    create_sql_statement += ");"
 
     drop_sql_statement = "DROP TABLE " + table_name + ";"
 
@@ -411,23 +412,22 @@ def populate_meal_tables():
             meal_crud.meal_insert(meal_record)
 
 
-def create_recommendations_table():
+def create_recommendation_table():
+    """ Create the Recommendation table """
 
-    """ Create the recommendations table """
-
-    table_name = "[dbo].[Recommendations]"
+    table_name = "[dbo].[Recommendation]"
     field_list = [
         "[RecommendationId] [int] IDENTITY(1,1) NOT NULL",
-        "[Type] [nvarchar](20) NOT NULL",
+        "[RecommendationType] [nvarchar](20) NOT NULL",
         "[LowerBound] [int] NOT NULL",
         "[UpperBound] [int] NOT NULL",
-        "[Recommendation] [nvarchar](512) NOT NULL",
-        "[UseCount] [int] NULL",
+        "[Recommendation] [nvarchar](255) NOT NULL",
+        "[UseCount] [int] NOT NULL",
         "PRIMARY KEY CLUSTERED([RecommendationId] ASC)"
     ]
     create_sql_statement = "CREATE TABLE " + table_name + "("
-    create_sql_statement = create_sql_statement + ", ".join(field_list)
-    create_sql_statement = create_sql_statement + ");"
+    create_sql_statement += ", ".join(field_list)
+    create_sql_statement += ");"
 
     drop_sql_statement = "DROP TABLE " + table_name + ";"
 
@@ -443,3 +443,7 @@ def create_table(create_sql_statement, drop_sql_statement):
             cursor.execute(drop_sql_statement)
             cursor.execute(create_sql_statement)
             print(ex.args)
+
+
+
+
