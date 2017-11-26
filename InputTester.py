@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 import sys
 
 # Import your class here
-from InputWindow import InputWindow
+from exercise import Exercise
 
 class Test(QMainWindow):
 
@@ -14,9 +14,7 @@ class Test(QMainWindow):
 		self.setCentralWidget(self.mdi)
 
 		# Change this to your class
-		self.wind = InputWindow()
-
-		self.wind.make_window()
+		self.wind = Exercise()
 
 		self.mdi.addSubWindow(self.wind)
 
