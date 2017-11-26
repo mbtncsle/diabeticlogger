@@ -8,6 +8,7 @@ class RecommendationRecord:
     """
     Recommendation record class with constructor
     """
+
     def __init__(self, recommendation_id=-1,
                  recommendation_type="",
                  lower_bound=0,
@@ -36,11 +37,11 @@ def recommendation_insert(recommendation_record):
                     " (RecommendationType, LowerBound, UpperBound, Recommendation, UseCount) OUTPUT INSERTED."
     sql_statement += table_name + "Id"
     sql_statement += " VALUES ("
-    sql_statement += "'" + str(recommendation_record.recommendation_type) + ", "
+    sql_statement += "'" + str(recommendation_record.recommendation_type) + "', "
     sql_statement += str(recommendation_record.lower_bound) + ", "
     sql_statement += str(recommendation_record.upper_bound) + ", "
     sql_statement += "'" + recommendation_record.recommendation + "', "
-    sql_statement += "'" + str(recommendation_record.use_count) + "'"
+    sql_statement += str(recommendation_record.use_count)
     sql_statement += ");"
 
     with db.Db() as cursor:
@@ -62,7 +63,7 @@ def recommendation_select_by_id(recommendation_id):
     """
 
     sql_statement = "SELECT " + table_name + \
-                    "Id, RecommendationType, LowerBound, UpperBound, Recommendation, UseCount FROM " +\
+                    "Id, RecommendationType, LowerBound, UpperBound, Recommendation, UseCount FROM " + \
                     table_name + " WHERE " + table_name + "Id = " + str(recommendation_id) + ";"
 
     with db.Db() as cursor:
@@ -96,8 +97,8 @@ def recommendation_select_by_bounds(reading, recommendation_type):
     """
     sql_statement = "SELECT " + table_name + \
                     "Id, RecommendationType, LowerBound, UpperBound, Recommendation, UseCount" + \
-                    " FROM " + table_name + " WHERE (LowerBound >= " + str(reading) + \
-                    " AND UpperBound <= " + str(reading) + ") AND RecommendationType = '" + str(recommendation_type) + \
+                    " FROM " + table_name + " WHERE (LowerBound <= " + str(reading) + \
+                    " AND UpperBound >= " + str(reading) + ") AND RecommendationType = '" + str(recommendation_type) + \
                     "';"
 
     with db.Db() as cursor:
@@ -107,23 +108,21 @@ def recommendation_select_by_bounds(reading, recommendation_type):
             print(ex.args)
             return None
 
-        return_recommendation_records = []
         row = cursor.fetchone()
 
-        while row:
-            return_recommendation_records.append(
-                RecommendationRecord(
-                    recommendation_id=row.RecommendationId,
-                    recommendation_type=row.RecommendationType,
-                    lower_bound=row.LowerBound,
-                    upper_bound=row.UpperBound,
-                    recommendation=row.Recommendation,
-                    use_count=row.UseCount
-                )
+        if row:
+            return_record = RecommendationRecord(
+                recommendation_id=row.RecommendationId,
+                recommendation_type=row.RecommendationType,
+                lower_bound=row.LowerBound,
+                upper_bound=row.UpperBound,
+                recommendation=row.Recommendation,
+                use_count=row.UseCount
             )
-            row = cursor.fetchone()
 
-    return return_recommendation_records
+            return return_record
+        else:
+            return None
 
 
 def recommendation_delete(recommendation_id):

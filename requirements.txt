@@ -1,10 +1,1 @@
-#======================================================================================================================
-# The database utilized in the program is Microsoft SQL Server 2017 Express Edition
-# It can be downloaded
-#   from https://www.microsoft.com/en-us/sql-server/sql-server-editions-express
-# You may also need the driver
-#   https://docs.microsoft.com/en-us/sql/connect/sql-connection-libraries#anchor-20-drivers-relational-access
-#======================================================================================================================
-# To install python packages listed below use the following command
-#   pip install -r requirements.txt
 pyodbc==4.0.17
