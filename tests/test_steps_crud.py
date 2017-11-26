@@ -5,7 +5,7 @@ import steps_crud
 # =============================================================================
 # Tests to determine if a Steps record can be inserted and then
 # retrieved by id
-# Acceptance Criteria for DIAB-125
+# Acceptance Criteria for DIAB-127
 #       A record is inserted into the database with specific values
 # Author: Tim Camp
 # Date Created: 11/24/2017
@@ -46,7 +46,8 @@ def test_insert():
 # =============================================================================
 # Tests to determine if a Steps records be retrieved for the past
 # number of days
-# Acceptance Criteria for
+# Acceptance Criteria for DIAB-132
+#       Records are retrieved based on a number of days in the past
 # =============================================================================
 def test_select_by_days():
 
@@ -69,7 +70,7 @@ def test_select_by_days():
 
 # =============================================================================
 # Tests to determine if a Steps record is deleted
-# Acceptance Criteria for
+# Acceptance Criteria for (Not in Sprint, added for completeness and testing)
 # =============================================================================
 def test_delete():
 

@@ -47,7 +47,8 @@ def test_insert():
 # =============================================================================
 # Tests to determine if a Blood Glucose records be retrieved for the past
 # number of days
-# Acceptance Criteria for
+# Acceptance Criteria for DIAB-130
+#       Retrieve records for a number of days in the past
 # =============================================================================
 def test_select_by_days():
 
@@ -70,7 +71,7 @@ def test_select_by_days():
 
 # =============================================================================
 # Tests to determine if a Blood Glucose record is deleted
-# Acceptance Criteria for
+# Acceptance Criteria for (Not in Sprint, included for completeness and testing)
 # =============================================================================
 def test_delete():
 
