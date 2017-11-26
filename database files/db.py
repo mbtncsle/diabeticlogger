@@ -18,7 +18,7 @@ class Db:
         connection_string += "SERVER=" + server_name + ";"
         connection_string += "DATABASE=" + db_name + ";"
         connection_string += "UID=sa;"
-        connection_string += "PWD=Se47nw##"
+        connection_string += "PWD=[Put sa password here]"
 
         try:
             self.__connection = pyodbc.connect(connection_string, autocommit=True)
