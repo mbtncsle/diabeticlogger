@@ -4,14 +4,14 @@ import datetime
 from database_files import sleep_crud
 
 
-# =============================================================================
+# ==============================================================================
 # Tests to determine if a Sleep record can be inserted and then
 # retrieved by id
 # Acceptance Criteria for DIAB-131
 #       A record is inserted into the database with specific values
 # Author: Tim Camp
 # Date Created: 11/24/2017
-# =============================================================================
+# ==============================================================================
 def test_insert():
 
     # Specific values

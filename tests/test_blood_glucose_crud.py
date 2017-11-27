@@ -5,14 +5,14 @@ import datetime
 from database_files import blood_glucose_crud
 
 
-# =============================================================================
+# ==============================================================================
 # Tests to determine if a Blood Glucose record can be inserted and then
 # retrieved by id
 # Acceptance Criteria for DIAB-125
 #       A record is inserted into the database with specific values
 # Author: Tim Camp
 # Date Created: 11/24/2017
-# =============================================================================
+# ==============================================================================
 def test_insert():
 
     # Specific values
