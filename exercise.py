@@ -99,4 +99,10 @@ class Exercise(InputWindow):
 
 	# Function for submitting data
 	def submit(self):
-		super(Exercise, self).log_input()
+		try:
+			int(self.step_qle.text())
+			self.error_lbl.setText("")
+			super(Exercise, self).log_input(3, self.step_qle.text(), self.date_qde.date(), self.time.time())
+		except Exception as e:
+			self.error_lbl.setText("Invalid input")
+			self.error_lbl.adjustSize()

@@ -134,5 +134,11 @@ class Foodlist(InputWindow):
 
 	# Function for submitting data
 	def submit(self):
-		super(Foodlist, self).log_input()
-
+		try:
+			int(self.serving_qle.text())
+			int(self.combo.itemData(self.combo.currentIndex()))
+			self.error_lbl.setText("")
+			super(Foodlist, self).log_input(4, [self.serving_qle.text(), self.combo.itemData(self.combo.currentIndex()), self.combo.currentText().split("-")[0][:-1]], self.date_qde.date(), self.time.time())
+		except Exception as e:
+			self.error_lbl.setText("Invalid Input")
+			self.error_lbl.adjustSize()

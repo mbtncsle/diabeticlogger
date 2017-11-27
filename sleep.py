@@ -55,6 +55,7 @@ class Sleep(InputWindow):
 		self.num_buttons = dict()
 		self.backspace_qpb.setText("Backspace")
 		self.backspace_qpb.move(107.5, 280)
+		self.backspace_qpb.clicked.connect(self.delete)
 		for i in range(0, 10):
 			self.num_buttons["numpad" + str(i)] = QPushButton(self)
 			self.num_buttons["numpad" + str(i)].setText(str(i))
@@ -99,4 +100,10 @@ class Sleep(InputWindow):
 
 	# Function for submitting data
 	def submit(self):
-		super(Sleep, self).log_input()
+		try:
+			int(self.sleep_qle.text())
+			self.error_lbl.setText("")
+			super(Sleep, self).log_input(2, self.sleep_qle.text(), self.date_qde.date(), self.time.time())
+		except Exception as e:
+			self.error_lbl.setText("Invalid Input")
+			self.error_lbl.adjustSize()

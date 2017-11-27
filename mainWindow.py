@@ -3,6 +3,9 @@ from PyQt5.QtCore import Qt
 import sys
 from InputWindow import InputWindow
 from exercise import Exercise
+from foodlist import Foodlist
+from sleep import Sleep
+from bloodglucose import Glucose
 
 class MainWindow(QMainWindow):
 
@@ -47,7 +50,7 @@ class MainWindow(QMainWindow):
 		self.toolbar.insertSeparator(None)
 
 		# Create each of the sub windows
-		self.input_windows = {self.blood_glucose: InputWindow(), self.food_intake: InputWindow(), self.sleep_hours: InputWindow(), self.walk_steps: Exercise()}
+		self.input_windows = {self.blood_glucose: Glucose(), self.food_intake: Foodlist(), self.sleep_hours: Sleep(), self.walk_steps: Exercise()}
 		self.graph_windows = {self.blood_glucose: InputWindow(), self.food_intake: InputWindow(), self.sleep_hours: InputWindow(), self.walk_steps: InputWindow()}
 		self.recommended_windows = {self.blood_glucose: InputWindow(), self.food_intake: InputWindow(), self.sleep_hours: InputWindow(), self.walk_steps: InputWindow()}
 		self.log_windows = {self.blood_glucose: InputWindow(), self.food_intake: InputWindow(), self.sleep_hours: InputWindow(), self.walk_steps: InputWindow()}
@@ -62,7 +65,7 @@ class MainWindow(QMainWindow):
 			self.graph_windows[k].setGeometry(self.window_width - self.sub_window_width, 0, self.sub_window_width, self.sub_window_height)
 			self.recommended_windows[k].setGeometry(0, self.window_height - self.sub_window_height, self.sub_window_width, self.sub_window_height)
 			self.log_windows[k].setGeometry(self.window_width - self.sub_window_width, self.window_height - self.sub_window_height, self.sub_window_width, self.sub_window_height)
-			if k != self.walk_steps:
+			if k != self.blood_glucose:
 				self.input_windows[k].setVisible(False)
 				self.graph_windows[k].setVisible(False)
 				self.recommended_windows[k].setVisible(False)
