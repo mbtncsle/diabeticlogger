@@ -1,5 +1,7 @@
+import sys
+sys.path.insert(0, "./database_files")
 import datetime
-import sleep_crud
+from database_files import sleep_crud
 
 
 # =============================================================================
