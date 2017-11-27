@@ -9,6 +9,8 @@ from bloodglucose import Glucose
 from RecommendationsWindow import RecommendationsWindow
 from GraphWindow import GraphWindow
 from LogWindow import LogWindow
+sys.path.insert(0, "./database_files")
+import blood_glucose_crud
 
 class MainWindow(QMainWindow):
 
@@ -28,6 +30,8 @@ class MainWindow(QMainWindow):
 
 		self.sub_window_width = (self.window_width - self.margin) / 2
 		self.sub_window_height = (self.window_height - self.margin) / 2
+
+		self.setWindowTitle("Diabetic Logger        A1C Level: " + str(round(self.get_a1c(), 2)))
 
 		# Prepare the main area
 		self.mdi = QMdiArea()
@@ -80,8 +84,18 @@ class MainWindow(QMainWindow):
 		self.setGeometry(100, 30, self.window_width, self.window_height)
 		self.show()
 
+	# determine the a1c
+	def get_a1c(self):
+		total = 0
+		logs = blood_glucose_crud.blood_glucose_select_by_days(30)
+		for log in logs:
+			total += log.reading
+		total /= len(logs)
+		return total
+
 	# update the windows with new data
 	def update_data(self):
+		self.setWindowTitle("Diabetic Logger        A1C Level: " + str(round(self.get_a1c(), 2)))
 		self.graph_window.update()
 		self.recommended_window.update()
 		self.log_window.update()
