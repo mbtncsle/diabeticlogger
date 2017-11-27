@@ -11,14 +11,14 @@ class Db:
     #
     def __init__(self):
 
-        server_name = "t14000420144353\SQLExpress"
+        server_name = "Mikes-laptop\SQLExpress"
         db_name = "DiabeticLogger"
 
         connection_string = "DRIVER={SQL Server Native Client 11.0};"
         connection_string += "SERVER=" + server_name + ";"
         connection_string += "DATABASE=" + db_name + ";"
         connection_string += "UID=sa;"
-        connection_string += "PWD=[Put sa password here]"
+        connection_string += "PWD=Vampires6!"
 
         try:
             self.__connection = pyodbc.connect(connection_string, autocommit=True)

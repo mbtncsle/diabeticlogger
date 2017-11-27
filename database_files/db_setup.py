@@ -32,10 +32,10 @@ def setup():
 def create_database():
     """ Sets up the database """
 
-    server_name = "t14000420144353\SQLExpress"
+    server_name = "Mikes-laptop\SQLExpress"
     db_name = "DiabeticLogger"
     user_id = "sa"
-    password = "[Put sa password here]"
+    password = "Vampires6!"
 
     connection_string = "DRIVER={SQL Server Native Client 11.0};"
     connection_string += "SERVER=" + server_name + ";"
@@ -447,3 +447,4 @@ def create_table(create_sql_statement, drop_sql_statement):
 
 
 
+setup()
