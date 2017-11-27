@@ -51,6 +51,7 @@ class MainWindow(QMainWindow):
 			self.toolbar.addAction(i)
 			self.toolbar.insertSeparator(i)
 		self.toolbar.insertSeparator(None)
+		self.toolbar.actionTriggered[QAction].connect(self.tool_button_pressed)
 
 		# Setup the update button
 		self.update = QPushButton("Update", self)
@@ -84,6 +85,33 @@ class MainWindow(QMainWindow):
 		self.graph_window.update()
 		self.recommended_window.update()
 		self.log_window.update()
+
+	def tool_button_pressed(self, button):
+		bt = button.text()
+		num = 0
+		if bt == "Blood Glucose":
+			for k in self.input_windows:
+				self.input_windows[k].setVisible(False)
+			self.input_windows[self.blood_glucose].setVisible(True)
+			num = 1
+		elif bt == "Hours of Sleep":
+			for k in self.input_windows:
+				self.input_windows[k].setVisible(False)
+			self.input_windows[self.sleep_hours].setVisible(True)
+			num = 2
+		elif bt == "Steps Walked":
+			for k in self.input_windows:
+				self.input_windows[k].setVisible(False)
+			self.input_windows[self.walk_steps].setVisible(True)
+			num = 3
+		elif bt == "Food Intake":
+			for k in self.input_windows:
+				self.input_windows[k].setVisible(False)
+			self.input_windows[self.food_intake].setVisible(True)
+			num = 4
+		if num != 0:
+			self.graph_window.change_data(num)
+			self.log_window.change_data(num)
 
 app = QApplication(sys.argv)
 inp = MainWindow()

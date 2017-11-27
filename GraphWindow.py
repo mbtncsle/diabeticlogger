@@ -22,8 +22,9 @@ class GraphWindow(QMdiSubWindow):
 		self.show()
 
 	# Change which data is graphed
-	def change_data(data):
+	def change_data(self, data):
 		self.data = data
+		self.update()
 
 	# Get data and graph it
 	def update(self):

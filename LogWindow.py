@@ -19,25 +19,27 @@ class LogWindow(QMdiSubWindow):
 		self.food_list = 4
 		self.data = self.blood_glucose
 
-		scrollarea = QScrollArea(self)
-		scrollarea.setWidgetResizable(True)
-		self.frame = QFrame(scrollarea)
+		self.scrollarea = QScrollArea(self)
+		self.scrollarea.setWidgetResizable(True)
+		self.frame = QFrame(self.scrollarea)
 		self.frame.setLayout(QVBoxLayout())
-		scrollarea.setWidget(self.frame)
-		scrollarea.setGeometry(0, 0, 550, 250)
+		self.scrollarea.setWidget(self.frame)
+		self.scrollarea.setGeometry(0, 0, 550, 250)
 
 		self.update()
 
 		self.show()
 
 	# Change which data logs are shown
-	def change_data(data):
+	def change_data(self, data):
 		self.data = data
+		self.update()
 
 	# Get logs and show them
 	def update(self):
-		while not self.frame.layout().isEmpty():
-			self.layout.removeItem(0)
+		for i in reversed(range(self.frame.layout().count())): 
+			self.frame.layout().itemAt(i).widget().setParent(None)
+
 		if self.data == self.blood_glucose:
 			for log in blood_glucose_crud.blood_glucose_select_by_days(30):
 				self.frame.layout().addWidget(QLabel(log.meal + " blood glucose level was " + str(log.reading) + " on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))

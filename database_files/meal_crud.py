@@ -17,6 +17,7 @@ class MealRecord:
         self.reading = reading
         self.record_date = record_date
         self.notes = notes
+        self.meal_items = meal_items
 
         if meal_items is None:
             self.meal_items = []
