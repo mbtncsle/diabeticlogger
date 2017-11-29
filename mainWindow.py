@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
 		self.input_windows = {self.blood_glucose: Glucose(), self.food_intake: Foodlist(), self.sleep_hours: Sleep(), self.walk_steps: Exercise()}
 		self.graph_window = GraphWindow()
 		self.recommended_window = RecommendationsWindow()
-		self.log_window = LogWindow()
+		self.log_window = LogWindow(self)
 
 		# Hide everything but the blood glucose and add it all to the main window
 		self.mdi.addSubWindow(self.graph_window)

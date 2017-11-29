@@ -6,8 +6,10 @@ import blood_glucose_crud, meal_crud, meal_item_crud, sleep_crud, steps_crud
 
 class LogWindow(QMdiSubWindow):
 
-	def __init__(self):
+	def __init__(self, parent = None):
 		super(LogWindow, self).__init__(parent = None)
+
+		self.parent = parent
 
 		# Prepare the window
 		self.setWindowFlags(Qt.FramelessWindowHint)
@@ -46,7 +48,7 @@ class LogWindow(QMdiSubWindow):
 			sleep_crud.sleep_delete(self.sender().extra)
 		else:
 			steps_crud.steps_delete(self.sender().extra)
-		self.update()
+		self.parent.update_data()
 
 	# Get logs and show them
 	def update(self):
