@@ -6,7 +6,7 @@ import blood_glucose_crud, meal_crud, meal_item_crud, sleep_crud, steps_crud
 
 class LogWindow(QMdiSubWindow):
 
-	def __init__(self, parent = None):
+	def __init__(self, parent):
 		super(LogWindow, self).__init__(parent = None)
 
 		self.parent = parent

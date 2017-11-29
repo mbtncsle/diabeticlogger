@@ -6,8 +6,8 @@ from InputWindow import InputWindow
 
 class Glucose(InputWindow):
 
-	def __init__(self):
-		super(Glucose, self).__init__()
+	def __init__(self, parent):
+		super(Glucose, self).__init__(parent)
 
 		# Create the labels, setting their text, and their locations
 		self.glucose_lbl = QLabel(self)

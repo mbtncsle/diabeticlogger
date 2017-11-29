@@ -6,8 +6,8 @@ from InputWindow import InputWindow
 
 class Exercise(InputWindow):
 
-	def __init__(self):
-		super(Exercise, self).__init__()
+	def __init__(self, parent):
+		super(Exercise, self).__init__(parent)
 
 		# Create the labels, setting their text, and their locations
 		self.step_lbl = QLabel(self)

@@ -7,8 +7,10 @@ import blood_glucose_crud, meal_crud, meal_item_crud, sleep_crud, steps_crud
 
 class InputWindow(QMdiSubWindow):
 	
-	def __init__(self):
+	def __init__(self, parent):
 		super(InputWindow, self).__init__(parent = None)
+
+		self.parent = parent
 		
 		# Prepare the window
 		self.setWindowFlags(Qt.FramelessWindowHint)
@@ -62,6 +64,7 @@ class InputWindow(QMdiSubWindow):
 			if id == None:
 				id = meal_crud.meal_insert(meal_crud.MealRecord(meal = meal, reading = int(data[0]) * int(data[1]), record_date = dt))
 			meal_item_crud.meal_item_insert(meal_item_crud.MealItemRecord(meal_id = id, description = data[2], portions = int(data[0]), carbs_per_portion = int(data[1]), total_carbs = int(data[0]) * int(data[1])))
+		self.parent.update_data()
 		note = QDialog()
 		note_lbl = QLabel(note)
 		note_button = QPushButton("Okay", note)

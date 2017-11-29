@@ -57,13 +57,8 @@ class MainWindow(QMainWindow):
 		self.toolbar.insertSeparator(None)
 		self.toolbar.actionTriggered[QAction].connect(self.tool_button_pressed)
 
-		# Setup the update button
-		self.update = QPushButton("Update", self)
-		self.update.move(self.window_width - self.sub_window_width, self.sub_window_height + 30)
-		self.update.clicked.connect(self.update_data)
-
 		# Create each of the sub windows
-		self.input_windows = {self.blood_glucose: Glucose(), self.food_intake: Foodlist(), self.sleep_hours: Sleep(), self.walk_steps: Exercise()}
+		self.input_windows = {self.blood_glucose: Glucose(self), self.food_intake: Foodlist(self), self.sleep_hours: Sleep(self), self.walk_steps: Exercise(self)}
 		self.graph_window = GraphWindow()
 		self.recommended_window = RecommendationsWindow()
 		self.log_window = LogWindow(self)

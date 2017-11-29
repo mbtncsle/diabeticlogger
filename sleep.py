@@ -6,8 +6,8 @@ from InputWindow import InputWindow
 
 class Sleep(InputWindow):
 
-	def __init__(self):
-		super(Sleep, self).__init__()
+	def __init__(self, parent):
+		super(Sleep, self).__init__(parent)
 
 		# Create the labels, setting their text, and their locations
 		self.sleep_lbl = QLabel(self)

@@ -6,8 +6,8 @@ from InputWindow import InputWindow
 
 class Foodlist(InputWindow):
 
-	def __init__(self):
-		super(Foodlist, self).__init__()
+	def __init__(self, parent):
+		super(Foodlist, self).__init__(parent)
 
 		# Create the labels, setting their text, and their locations
 		self.serving_lbl = QLabel(self)
