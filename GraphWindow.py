@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMdiSubWindow, QSizePolicy
 from PyQt5.QtCore import Qt
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -36,7 +36,7 @@ class GraphWindow(QMdiSubWindow):
 		self.update()
 
 	# Get data and graph it
-	def update(self, begin, end):
+	def update(self, begin = datetime.now() - timedelta(days = 30), end = datetime.now()):
 		days = 10
 		x_axis = []
 		y_axis = []

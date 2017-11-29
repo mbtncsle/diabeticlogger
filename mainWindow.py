@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMdiArea, QApplication, QMainWindow, QAction, QDateEdit, QLabel
 from PyQt5.QtCore import Qt
-from datetime import datetime
+from datetime import datetime, timedelta
 import sys
 from InputWindow import InputWindow
 from exercise import Exercise
@@ -63,7 +63,7 @@ class MainWindow(QMainWindow):
 		self.date_begin.move(self.window_width - self.sub_window_width, self.sub_window_height + 30)
 		self.date_begin.setDisplayFormat("MM/dd/yyyy")
 		self.date_begin.setCalendarPopup(True)
-		self.date_begin.setDate(datetime.now())
+		self.date_begin.setDate(datetime.now() - timedelta(days = 30))
 		self.date_begin.dateChanged.connect(self.update_data)
 
 		self.date_lbl = QLabel("to", self)
@@ -111,9 +111,9 @@ class MainWindow(QMainWindow):
 	# update the windows with new data
 	def update_data(self):
 		self.setWindowTitle("Diabetic Logger        A1C Level: " + str(round(self.get_a1c(), 2)))
-		self.graph_window.update(datetime.strptime(self.date_begin.date.toString("MM/dd/yyyy"), "%m/%d/%Y"), datetime.strptime(self.date_end.date.toString("MM/dd/yyyy"), "%m/%d/%Y"))
+		self.graph_window.update(datetime.strptime(self.date_begin.date().toString("MM/dd/yyyy"), "%m/%d/%Y"), datetime.strptime(self.date_end.date().toString("MM/dd/yyyy"), "%m/%d/%Y"))
 		#self.recommended_window.update()
-		self.log_window.update(datetime.strptime(self.date_begin.date.toString("MM/dd/yyyy"), "%m/%d/%Y"), datetime.strptime(self.date_end.date.toString("MM/dd/yyyy"), "%m/%d/%Y"))
+		self.log_window.update(datetime.strptime(self.date_begin.date().toString("MM/dd/yyyy"), "%m/%d/%Y"), datetime.strptime(self.date_end.date().toString("MM/dd/yyyy"), "%m/%d/%Y"))
 
 	def tool_button_pressed(self, button):
 		bt = button.text()

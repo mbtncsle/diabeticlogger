@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMdiSubWindow, QVBoxLayout, QScrollArea, QLabel, QFrame, QPushButton, QHBoxLayout
 from PyQt5.QtCore import Qt, pyqtSlot
+from datetime import datetime, timedelta
 import sys
 sys.path.insert(0, "./database_files")
 import blood_glucose_crud, meal_crud, meal_item_crud, sleep_crud, steps_crud
@@ -51,8 +52,8 @@ class LogWindow(QMdiSubWindow):
 		self.parent.update_data()
 
 	# Get logs and show them
-	def update(self, begin, end):
-		
+	def update(self, begin = datetime.now() - timedelta(days = 30), end = datetime.now()):
+
 		for i in reversed(range(self.frame.layout().count())): 
 			if self.frame.layout().itemAt(i).widget() != None:
 				self.frame.layout().itemAt(i).widget().setParent(None)
