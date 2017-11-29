@@ -36,7 +36,7 @@ class GraphWindow(QMdiSubWindow):
 		self.update()
 
 	# Get data and graph it
-	def update(self):
+	def update(self, begin, end):
 		days = 10
 		x_axis = []
 		y_axis = []

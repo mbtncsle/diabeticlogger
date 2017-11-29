@@ -51,7 +51,8 @@ class LogWindow(QMdiSubWindow):
 		self.parent.update_data()
 
 	# Get logs and show them
-	def update(self):
+	def update(self, begin, end):
+		
 		for i in reversed(range(self.frame.layout().count())): 
 			if self.frame.layout().itemAt(i).widget() != None:
 				self.frame.layout().itemAt(i).widget().setParent(None)

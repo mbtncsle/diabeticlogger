@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QMdiArea, QApplication, QPushButton, QMainWindow, QAction
+from PyQt5.QtWidgets import QMdiArea, QApplication, QMainWindow, QAction, QDateEdit, QLabel
 from PyQt5.QtCore import Qt
+from datetime import datetime
 import sys
 from InputWindow import InputWindow
 from exercise import Exercise
@@ -57,6 +58,25 @@ class MainWindow(QMainWindow):
 		self.toolbar.insertSeparator(None)
 		self.toolbar.actionTriggered[QAction].connect(self.tool_button_pressed)
 
+		# Setup the date selectors for the data with their label
+		self.date_begin = QDateEdit(self)
+		self.date_begin.move(self.window_width - self.sub_window_width, self.sub_window_height + 30)
+		self.date_begin.setDisplayFormat("MM/dd/yyyy")
+		self.date_begin.setCalendarPopup(True)
+		self.date_begin.setDate(datetime.now())
+		self.date_begin.dateChanged.connect(self.update_data)
+
+		self.date_lbl = QLabel("to", self)
+		self.date_lbl.adjustSize()
+		self.date_lbl.move(self.window_width - self.sub_window_width + self.date_begin.size().width() + 10, self.sub_window_height + self.date_begin.size().height() // 2 - self.date_lbl.size().height() // 2 + 30)
+
+		self.date_end = QDateEdit(self)
+		self.date_end.move(self.window_width - self.sub_window_width + self.date_begin.size().width() + self.date_lbl.size().width() + 20, self.sub_window_height + 30)
+		self.date_end.setDisplayFormat("MM/dd/yyyy")
+		self.date_end.setCalendarPopup(True)
+		self.date_end.setDate(datetime.now())
+		self.date_end.dateChanged.connect(self.update_data)
+
 		# Create each of the sub windows
 		self.input_windows = {self.blood_glucose: Glucose(self), self.food_intake: Foodlist(self), self.sleep_hours: Sleep(self), self.walk_steps: Exercise(self)}
 		self.graph_window = GraphWindow()
@@ -91,9 +111,9 @@ class MainWindow(QMainWindow):
 	# update the windows with new data
 	def update_data(self):
 		self.setWindowTitle("Diabetic Logger        A1C Level: " + str(round(self.get_a1c(), 2)))
-		self.graph_window.update()
+		self.graph_window.update(datetime.strptime(self.date_begin.date.toString("MM/dd/yyyy"), "%m/%d/%Y"), datetime.strptime(self.date_end.date.toString("MM/dd/yyyy"), "%m/%d/%Y"))
 		#self.recommended_window.update()
-		self.log_window.update()
+		self.log_window.update(datetime.strptime(self.date_begin.date.toString("MM/dd/yyyy"), "%m/%d/%Y"), datetime.strptime(self.date_end.date.toString("MM/dd/yyyy"), "%m/%d/%Y"))
 
 	def tool_button_pressed(self, button):
 		bt = button.text()
