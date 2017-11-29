@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMdiSubWindow, QVBoxLayout, QScrollArea, QLabel, QFrame, QPushButton
+from PyQt5.QtWidgets import QMdiSubWindow, QVBoxLayout, QScrollArea, QLabel, QFrame, QPushButton, QHBoxLayout
 from PyQt5.QtCore import Qt, pyqtSlot
 import sys
 sys.path.insert(0, "./database_files")
@@ -51,7 +51,10 @@ class LogWindow(QMdiSubWindow):
 	# Get logs and show them
 	def update(self):
 		for i in reversed(range(self.frame.layout().count())): 
-			self.frame.layout().itemAt(i).widget().setParent(None)
+			if self.frame.layout().itemAt(i).widget() != None:
+				self.frame.layout().itemAt(i).widget().setParent(None)
+			else:
+				self.frame.layout().itemAt(i).setParent(None)
 
 		if self.data == self.blood_glucose:
 			for log in blood_glucose_crud.blood_glucose_select_by_days(30):
@@ -60,7 +63,10 @@ class LogWindow(QMdiSubWindow):
 				but.setText("X")
 				but.extra = log.blood_glucose_id
 				but.clicked.connect(self.delete_log)
-				self.frame.layout().addWidget(but)
+				hbox = QHBoxLayout()
+				hbox.addWidget(but)
+				hbox.addStretch(5)
+				self.frame.layout().addLayout(hbox)
 		elif self.data == self.food_list:
 			for log in meal_crud.meal_select_by_days(30):
 				st = ""
@@ -74,7 +80,10 @@ class LogWindow(QMdiSubWindow):
 				but.setText("X")
 				but.extra = log.meal_id
 				but.clicked.connect(self.delete_log)
-				self.frame.layout().addWidget(but)
+				hbox = QHBoxLayout()
+				hbox.addWidget(but)
+				hbox.addStretch(5)
+				self.frame.layout().addLayout(hbox)
 		elif self.data == self.sleep:
 			for log in sleep_crud.sleep_select_by_days(30):
 				self.frame.layout().addWidget(QLabel(str(log.reading) + " hours of sleep on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
@@ -82,7 +91,10 @@ class LogWindow(QMdiSubWindow):
 				but.setText("X")
 				but.extra = log.sleep_id
 				but.clicked.connect(self.delete_log)
-				self.frame.layout().addWidget(but)
+				hbox = QHBoxLayout()
+				hbox.addWidget(but)
+				hbox.addStretch(5)
+				self.frame.layout().addLayout(hbox)
 		else:
 			for log in steps_crud.steps_select_by_days(30):
 				self.frame.layout().addWidget(QLabel(str(log.reading) + " steps walked on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
@@ -90,4 +102,7 @@ class LogWindow(QMdiSubWindow):
 				but.setText("X")
 				but.extra = log.steps_id
 				but.clicked.connect(self.delete_log)
-				self.frame.layout().addWidget(but)
+				hbox = QHBoxLayout()
+				hbox.addWidget(but)
+				hbox.addStretch(5)
+				self.frame.layout().addLayout(hbox)

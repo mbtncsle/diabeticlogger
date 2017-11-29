@@ -1,6 +1,7 @@
+import sys
+sys.path.insert(0, "../database_files")
 import datetime
-import steps_crud
-
+from database_files import steps_crud
 
 # =============================================================================
 # Tests to determine if a Steps record can be inserted and then

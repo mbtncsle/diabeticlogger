@@ -97,7 +97,7 @@ class MainWindow(QMainWindow):
 	def update_data(self):
 		self.setWindowTitle("Diabetic Logger        A1C Level: " + str(round(self.get_a1c(), 2)))
 		self.graph_window.update()
-		self.recommended_window.update()
+		#self.recommended_window.update()
 		self.log_window.update()
 
 	def tool_button_pressed(self, button):

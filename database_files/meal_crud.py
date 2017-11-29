@@ -1,7 +1,7 @@
 import pyodbc
 import datetime
-import db
-import meal_item_crud
+from database_files import db
+from database_files import meal_item_crud
 
 table_name = "Meal"
 
