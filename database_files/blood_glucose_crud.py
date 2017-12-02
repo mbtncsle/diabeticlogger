@@ -1,4 +1,3 @@
-# Add comment to push
 import pyodbc
 import datetime
 from database_files import db
