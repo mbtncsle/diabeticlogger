@@ -1,7 +1,7 @@
 import pyodbc
 import datetime
-import db
-import meal_item_crud
+from database_files import db
+from database_files import meal_item_crud
 
 table_name = "Meal"
 
@@ -103,6 +103,46 @@ def meal_select_by_days(days):
     sql_statement = "SELECT " + table_name + "Id, Meal, Reading, RecordDate, Notes" + \
                     " FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate DESC ;".format(
                         oldest_date.strftime("%Y-%m-%d 00:00:00"))
+
+    with db.Db() as cursor:
+        try:
+            cursor.execute(sql_statement)
+        except pyodbc.Error as ex:
+            print(ex.args)
+            return None
+
+        return_meal_records = []
+        row = cursor.fetchone()
+
+        while row:
+            return_meal_records.append(
+                MealRecord(
+                    meal_id=row.MealId,
+                    meal=row.Meal,
+                    reading=row.Reading,
+                    record_date=row.RecordDate,
+                    notes=row.Notes,
+                    meal_items=meal_item_crud.meal_items_select_by_meal_id(row.MealId)
+                )
+            )
+            row = cursor.fetchone()
+
+    return return_meal_records
+
+
+def meal_select_by_date(start_date, include_days):
+    """
+    Returns a list of records from the date specified backwards in time for the number of days specified
+    :param start_date: Date to start from and go back in time
+    :param include_days: days in the past to include
+    :return: List of MealRecords
+    """
+    oldest_date = start_date - datetime.timedelta(days=include_days)
+
+    sql_statement = "SELECT " + table_name + "Id, Meal, Reading, RecordDate, Notes " + \
+                    "FROM " + table_name + " WHERE RecordDate >= '" + oldest_date.strftime("%Y-%m-%d 00:00:00' ") + \
+                    "AND RecordDate <= '" + start_date.strftime("%Y-%m-%d 23:59:59' ") + \
+                    "ORDER BY RecordDate DESC;"
 
     with db.Db() as cursor:
         try:
