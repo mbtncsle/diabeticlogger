@@ -87,8 +87,8 @@ def blood_glucose_select_by_days(days):
     """
     oldest_date = datetime.datetime.today() - datetime.timedelta(days=days)
 
-    sql_statement = "SELECT " + table_name + "Id, Meal, Reading, RecordDate, Notes " + \
-                    "FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate DESC ;".format(
+    sql_statement = "SELECT " + table_name + "Id, Meal, Reading, RecordDate, Notes" + \
+                    " FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate DESC ;".format(
                         oldest_date.strftime("%Y-%m-%d 00:00:00"))
 
     with db.Db() as cursor:
