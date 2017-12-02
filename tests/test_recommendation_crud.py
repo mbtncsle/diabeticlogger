@@ -1,5 +1,3 @@
-import sys
-sys.path.insert(0, "./database_files")
 from database_files import recommendation_crud
 
 
