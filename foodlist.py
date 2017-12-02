@@ -1,19 +1,19 @@
 import sys
-from PyQt5.QtWidgets import QLabel, QLineEdit, QDateEdit, QPushButton, QMdiSubWindow, QTimeEdit
-from PyQt5.QtCore import QTime
+from PyQt5.QtWidgets import QLabel, QLineEdit, QDateEdit, QPushButton, QMdiSubWindow, QTimeEdit, QComboBox
+from PyQt5.QtCore import QTime, pyqtSlot
 from datetime import datetime
 from InputWindow import InputWindow
 
-class Exercise(InputWindow):
+class Foodlist(InputWindow):
 
 	def __init__(self, parent):
-		super(Exercise, self).__init__(parent)
+		super(Foodlist, self).__init__(parent)
 
 		# Create the labels, setting their text, and their locations
-		self.step_lbl = QLabel(self)
-		self.step_lbl.setText("Please enter the number of steps")
-		self.step_lbl.move(77.5, 27)
-		self.step_lbl.adjustSize()
+		self.serving_lbl = QLabel(self)
+		self.serving_lbl.setText("Input the number of servings")
+		self.serving_lbl.move(77.5, 27)
+		self.serving_lbl.adjustSize()
 
 		self.error_lbl = QLabel(self)
 		#self.error_lbl.setText("Incorrect input")
@@ -21,7 +21,7 @@ class Exercise(InputWindow):
 		self.date_lbl = QLabel(self)
 		self.date_lbl.setText("Please pick a date")
 		self.date_lbl.move(450, 18)
-		self.step_lbl.adjustSize()
+		self.serving_lbl.adjustSize()
 		
 		self.time_lbl = QLabel(self)
 		self.time_lbl.setText("Please pick a time")
@@ -29,8 +29,8 @@ class Exercise(InputWindow):
 		self.time_lbl.adjustSize()
 
 		# Create the editing box
-		self.step_qle = QLineEdit(self)
-		self.step_qle.move(107.5, 40)
+		self.serving_qle = QLineEdit(self)
+		self.serving_qle.move(107.5, 40)
 
 		# Create the date box
 		self.date_qde = QDateEdit(self)
@@ -48,7 +48,6 @@ class Exercise(InputWindow):
 		self.backspace_qpb.setText("Backspace")
 		self.backspace_qpb.move(107.5, 280)
 		self.backspace_qpb.clicked.connect(self.delete)
-
 		for i in range(0, 10):
 			self.num_buttons["numpad" + str(i)] = QPushButton(self)
 			self.num_buttons["numpad" + str(i)].setText(str(i))
@@ -68,8 +67,10 @@ class Exercise(InputWindow):
 		self.num_buttons['numpad' + str(9)].move(200, 200)
 		self.num_buttons['numpad' + str(0)].move(120, 240)
 
+
+
 		# what happens when they press enter with the textbox selected
-		self.step_qle.returnPressed.connect(self.submit)
+		self.serving_qle.returnPressed.connect(self.submit)
 
 		# The date of the date input, whether it has a calendar popup arrow and what date it is initialized to
 		self.date_qde.setDisplayFormat("MM/dd/yyyy")
@@ -85,24 +86,59 @@ class Exercise(InputWindow):
 		self.time.move(450, 150)
 		#self.time.adjustSize()
 
+		#foodlist
+		self.error_lbl = QLabel(self)
+		#creates variable lvl and sets name as food lists
+		self.lbl = QLabel("Food List", self) 
+		#set combo and calls the combobox function to be able to modify a drop box
+		self.combo = QComboBox(self)	
+		self.combo.addItem("Bread - 11g", 11)
+		self.combo.addItem("Rice - 44g", 44)
+		self.combo.addItem("Ice Cream - 16g", 16)
+		self.combo.addItem("Milk - 12g", 12)
+		self.combo.addItem("Stir Fry - 7g", 7)
+
+		self.combo.activated.connect(self.handleActivated)
+
+		self.combo.move(300, 40)					
+		self.lbl.move(300, 18)				
+		self.error_lbl.move(300, 70)  
+
+	def handleActivated(self, index):
+		try:		
+			carbValue = self.combo.itemData(index)
+			totalCarbs = carbValue * int(self.serving_qle.text())
+			self.error_lbl.setText("")
+		except Exception as e:
+			self.error_lbl.setText("Wrong input on the serving size")
+			self.error_lbl.adjustSize()
+
+		#calculates number of carbs times the serving size
+
+
+		#Obtained the string name of the food and number of carbs
+		#self.combo.itemText(index)
+
 		self.show()
 
-	# Function for entering numpad numbers into the text box
-	def numbs(self, number):
-		self.step_qle.setText(self.step_qle.text() + str(self.sender().text()))
+		# Function for entering numpad numbers into the text box
+	@pyqtSlot()
+	def numbs(self):
+		self.serving_qle.setText(self.serving_qle.text() + str(self.sender().text()))
 
 	# Function for deleting the last number
 	def delete(self):
-		string = self.step_qle.text()
+		string = self.serving_qle.text()
 		if len(string) > 0:
-			self.step_qle.setText(string[:-1])
+			self.serving_qle.setText(string[:-1])
 
 	# Function for submitting data
 	def submit(self):
 		try:
-			int(self.step_qle.text())
+			int(self.serving_qle.text())
+			int(self.combo.itemData(self.combo.currentIndex()))
 			self.error_lbl.setText("")
-			super(Exercise, self).log_input(3, self.step_qle.text(), self.date_qde.date(), self.time.time())
+			super(Foodlist, self).log_input(4, [self.serving_qle.text(), self.combo.itemData(self.combo.currentIndex()), self.combo.currentText().split("-")[0][:-1]], self.date_qde.date(), self.time.time())
 		except Exception as e:
-			self.error_lbl.setText("Invalid input")
+			self.error_lbl.setText("Invalid Input")
 			self.error_lbl.adjustSize()

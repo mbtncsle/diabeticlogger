@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, "../database_files")
 import datetime
 from database_files import blood_glucose_crud
 

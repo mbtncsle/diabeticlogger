@@ -4,24 +4,25 @@ from PyQt5.QtCore import QTime
 from datetime import datetime
 from InputWindow import InputWindow
 
-class Exercise(InputWindow):
+class Sleep(InputWindow):
 
 	def __init__(self, parent):
-		super(Exercise, self).__init__(parent)
+		super(Sleep, self).__init__(parent)
 
 		# Create the labels, setting their text, and their locations
-		self.step_lbl = QLabel(self)
-		self.step_lbl.setText("Please enter the number of steps")
-		self.step_lbl.move(77.5, 27)
-		self.step_lbl.adjustSize()
+		self.sleep_lbl = QLabel(self)
+		self.sleep_lbl.setText("Please enter the hours of sleep")
+		self.sleep_lbl.move(77.5, 27)
+		self.sleep_lbl.adjustSize()
 
 		self.error_lbl = QLabel(self)
 		#self.error_lbl.setText("Incorrect input")
-
+		self.error_lbl.move(325, 275)
+                
 		self.date_lbl = QLabel(self)
 		self.date_lbl.setText("Please pick a date")
 		self.date_lbl.move(450, 18)
-		self.step_lbl.adjustSize()
+		self.sleep_lbl.adjustSize()
 		
 		self.time_lbl = QLabel(self)
 		self.time_lbl.setText("Please pick a time")
@@ -29,12 +30,19 @@ class Exercise(InputWindow):
 		self.time_lbl.adjustSize()
 
 		# Create the editing box
-		self.step_qle = QLineEdit(self)
-		self.step_qle.move(107.5, 40)
+		self.sleep_qle = QLineEdit(self)
+		self.sleep_qle.move(107.5, 40)
 
 		# Create the date box
 		self.date_qde = QDateEdit(self)
 		self.date_qde.move(450, 40)
+
+                #Creating the time box
+		self.time = QTimeEdit(self)
+		self.time.setDisplayFormat("hh:mm")
+		self.time.setTime(QTime())
+		self.time.move(450, 150)
+		#self.time.adjustSize()
 
 		# Create the submit button
 		self.submit_qpb = QPushButton(self)
@@ -48,7 +56,6 @@ class Exercise(InputWindow):
 		self.backspace_qpb.setText("Backspace")
 		self.backspace_qpb.move(107.5, 280)
 		self.backspace_qpb.clicked.connect(self.delete)
-
 		for i in range(0, 10):
 			self.num_buttons["numpad" + str(i)] = QPushButton(self)
 			self.num_buttons["numpad" + str(i)].setText(str(i))
@@ -69,7 +76,7 @@ class Exercise(InputWindow):
 		self.num_buttons['numpad' + str(0)].move(120, 240)
 
 		# what happens when they press enter with the textbox selected
-		self.step_qle.returnPressed.connect(self.submit)
+		self.sleep_qle.returnPressed.connect(self.submit)
 
 		# The date of the date input, whether it has a calendar popup arrow and what date it is initialized to
 		self.date_qde.setDisplayFormat("MM/dd/yyyy")
@@ -79,30 +86,24 @@ class Exercise(InputWindow):
 		# What happens when the submit button is clicked
 		self.submit_qpb.clicked.connect(self.submit)
 
-		self.time = QTimeEdit(self)
-		self.time.setDisplayFormat("hh:mm")
-		self.time.setTime(QTime())
-		self.time.move(450, 150)
-		#self.time.adjustSize()
-
 		self.show()
 
 	# Function for entering numpad numbers into the text box
 	def numbs(self, number):
-		self.step_qle.setText(self.step_qle.text() + str(self.sender().text()))
+		self.sleep_qle.setText(self.sleep_qle.text() + str(self.sender().text()))
 
 	# Function for deleting the last number
 	def delete(self):
-		string = self.step_qle.text()
+		string = self.sleep_qle.text()
 		if len(string) > 0:
-			self.step_qle.setText(string[:-1])
+			self.sleep_qle.setText(string[:-1])
 
 	# Function for submitting data
 	def submit(self):
 		try:
-			int(self.step_qle.text())
+			int(self.sleep_qle.text())
 			self.error_lbl.setText("")
-			super(Exercise, self).log_input(3, self.step_qle.text(), self.date_qde.date(), self.time.time())
+			super(Sleep, self).log_input(2, self.sleep_qle.text(), self.date_qde.date(), self.time.time())
 		except Exception as e:
-			self.error_lbl.setText("Invalid input")
+			self.error_lbl.setText("Invalid Input")
 			self.error_lbl.adjustSize()
