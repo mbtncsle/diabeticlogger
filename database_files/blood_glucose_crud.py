@@ -2,9 +2,6 @@ import pyodbc
 import datetime
 from database_files import db
 
-# import sys
-# sys.path.insert(0, "./")
-
 
 table_name = "BloodGlucose"
 
