@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMdiSubWindow, QSizePolicy
+from PyQt5.QtWidgets import QMdiSubWindow
 from PyQt5.QtCore import Qt
 import sys
 from datetime import datetime, timedelta
