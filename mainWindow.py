@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QPushButton, QMdiArea, QApplication, QMainWindow, QAction
+from PyQt5.QtWidgets import QMdiArea, QApplication, QMainWindow, QAction, QDateEdit, QLabel
 from PyQt5.QtCore import Qt
-import qdarkstyle
 from datetime import datetime, timedelta
 import sys
 from InputWindow import InputWindow
@@ -26,42 +25,13 @@ class MainWindow(QMainWindow):
 		self.sleep_hours = "Sleep"
 		self.walk_steps = "Walk"
 
-		self.window_width = 509
-		self.window_height = 746
+		self.window_width = 1200
+		self.window_height = 700
 
 		self.margin = 50
 
-		self.setFixedSize(509, 746)
-		# NEW setup stylesheet
-		app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
-
-		self.oneDay_qpb = QPushButton("1 day", self)
-		self.oneDay_qpb.setToolTip("This button displays graph for data collected within the day")
-		self.oneDay_qpb.setGeometry(50, 365, 105, 25)
-
-		self.oneWeek_qpb = QPushButton("1 Week", self)
-		self.oneWeek_qpb.setToolTip("This button displays graph for data collected within the week")
-		self.oneWeek_qpb.setGeometry(155, 365, 105, 25)
-
-		self.oneMonth_qpb = QPushButton("1 Month", self)
-		self.oneMonth_qpb.setToolTip("This button displays graph for data collected within the month")
-		self.oneMonth_qpb.setGeometry(260, 365, 105, 25)
-
-		self.oneYear_qpb = QPushButton("1 Year", self)
-		self.oneYear_qpb.setToolTip("This button displays graph for data collected within the yar")
-		self.oneYear_qpb.setGeometry(365, 365, 105, 25)
-
-		self.graph_qpb = QPushButton("Graph", self)
-		self.graph_qpb.setToolTip("This button will display a graphical representation of your blood glucose level")
-		self.graph_qpb.setGeometry(50, 390, 140, 25)
-
-		self.log_qpb = QPushButton("Data Sheet", self)
-		self.log_qpb.setToolTip("This button will display your past inputs")
-		self.log_qpb.setGeometry(190, 390, 140, 25)
-
-		self.recommendation_qpb = QPushButton("Recommendation", self)
-		self.recommendation_qpb.setToolTip("This button will display recommendations for you to take")
-		self.recommendation_qpb.setGeometry(330, 390, 140, 25)
+		self.sub_window_width = (self.window_width - self.margin) / 2
+		self.sub_window_height = (self.window_height - self.margin) / 2
 
 		self.setWindowTitle("Diabetic Logger        A1C Level: " + str(round(self.get_a1c(), 2)))
 
@@ -78,6 +48,7 @@ class MainWindow(QMainWindow):
 		QAction("Food Intake", self),
 		QAction("Hours of Sleep", self),
 		QAction("Steps Walked", self),
+		QAction("Notifications", self),
 		QAction("Graph of all data", self)
 		]
 
@@ -87,6 +58,25 @@ class MainWindow(QMainWindow):
 			self.toolbar.insertSeparator(i)
 		self.toolbar.insertSeparator(None)
 		self.toolbar.actionTriggered[QAction].connect(self.tool_button_pressed)
+
+		# Setup the date selectors for the data with their label
+		self.date_begin = QDateEdit(self)
+		self.date_begin.move(self.window_width - self.sub_window_width, self.sub_window_height + 30)
+		self.date_begin.setDisplayFormat("MM/dd/yyyy")
+		self.date_begin.setCalendarPopup(True)
+		self.date_begin.setDate(datetime.now() - timedelta(days = 30))
+		self.date_begin.dateChanged.connect(self.update_data)
+
+		self.date_lbl = QLabel("to", self)
+		self.date_lbl.adjustSize()
+		self.date_lbl.move(self.date_begin.pos().x() + self.date_begin.size().width() + 10, self.date_begin.pos().y() + self.date_begin.size().height() // 2 - self.date_lbl.size().height() // 2)
+
+		self.date_end = QDateEdit(self)
+		self.date_end.move(self.date_lbl.pos().x() + self.date_lbl.size().width() + 10, self.date_begin.pos().y())
+		self.date_end.setDisplayFormat("MM/dd/yyyy")
+		self.date_end.setCalendarPopup(True)
+		self.date_end.setDate(datetime.now())
+		self.date_end.dateChanged.connect(self.update_data)
 
 		# Create each of the sub windows
 		self.input_windows = {self.blood_glucose: Glucose(self), self.food_intake: Foodlist(self), self.sleep_hours: Sleep(self), self.walk_steps: Exercise(self)}
@@ -98,15 +88,16 @@ class MainWindow(QMainWindow):
 		self.mdi.addSubWindow(self.graph_window)
 		self.mdi.addSubWindow(self.recommended_window)
 		self.mdi.addSubWindow(self.log_window)
-		self.graph_window.setGeometry(2, 385, 505, 325)
-		self.recommended_window.setGeometry(2, 385, 505, 325)
-		self.log_window.setGeometry(2, 385, 505, 325)
+		self.graph_window.setGeometry(self.window_width - self.sub_window_width, 0, self.sub_window_width, self.sub_window_height)
+		self.recommended_window.setGeometry(0, self.window_height - self.sub_window_height, self.sub_window_width, self.sub_window_height)
+		self.log_window.setGeometry(self.window_width - self.sub_window_width, self.window_height - self.sub_window_height, self.sub_window_width, self.sub_window_height)
 		for k in self.input_windows:
 			self.mdi.addSubWindow(self.input_windows[k])
-			self.input_windows[k].setGeometry(2, 2, 505, 385)
+			self.input_windows[k].setGeometry(0, 0, self.sub_window_width, self.sub_window_height)
 			if k != self.blood_glucose:
 				self.input_windows[k].setVisible(False)
 
+		self.setGeometry(100, 30, self.window_width, self.window_height)
 		self.show()
 
 	# determine the a1c
