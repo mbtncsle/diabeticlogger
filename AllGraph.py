@@ -68,8 +68,7 @@ class AllGraph(QDialog):
 				logs = []
 				for log in logs:
 					avg += log.reading
-				if len(logs) > 0:
-					avg /= len(logs)
+				avg /= len(logs)
 				if not ("BG" in max_values) or avg > max_values["BG"]:
 					max_values["BG"] = avg
 				if not ("BG" in min_values) or avg < min_values["BG"]:
@@ -128,11 +127,10 @@ class PlotCanvas(FigureCanvas):
 		self.setParent(parent)
  
 
-	def plot(self, x_axis, y_axis, ylabel, xlabel, colors):
+	def plot(self, nums, ylabel, xlabel):
+		data = nums
 		self.axes.clear()
-		for k in x_axis:
-			if len(x_axis[k]) > 0:
-				self.axes.plot(x_axis[k], y_axis, colors[k])
+		self.axes.plot(data[0], data[1], 'r-')
 		self.axes.set_ylabel(ylabel)
 		self.axes.set_xlabel(xlabel)
 		self.draw()
