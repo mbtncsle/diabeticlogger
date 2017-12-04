@@ -1,8 +1,12 @@
 USE DiabeticLogger;
 GO
-EXEC dbo.USR_USP_CREATE_BASE_TABLES;
-GO
+--EXEC dbo.USR_USP_CREATE_BASE_TABLES;
+--GO
 
+TRUNCATE TABLE dbo.BloodGlucose
+TRUNCATE TABLE dbo.Meal
+TRUNCATE TABLE dbo.Sleep
+GO
 DECLARE @COUNTER_START INT = 1,
         @COUNTER_END INT = 3,
         @RECORD_DATE_START DATE = '2017-10-04',
@@ -50,16 +54,20 @@ END;
 
 GO
 
-EXEC dbo.USR_USP_CREATE_DATA_SLEEP;
+EXEC dbo.USR_USP_CREATE_DATA_SLEEP; 
 
 GO
 
-SELECT *
-FROM dbo.BG AS b
-ORDER BY b.RecordDate ASC,
-         b.Meal ASC,
-         b.Mark DESC;
-SELECT *
-FROM dbo.M AS m2;
-SELECT *
-FROM dbo.S AS s2;
+ --EXEC dbo.USR_USP_CREATE_DATA_MEAL @MEAL = 'BREAKFAST',                           -- nvarchar(max)
+ --                                     @RECORD_DATE_START = '2017-12-03', -- date
+ --                                     @RECORD_DATE_END = '2017-12-04';
+
+--SELECT *
+--FROM dbo.BG AS b
+--ORDER BY b.RecordDate ASC,
+--         b.Meal ASC,
+--         b.Mark DESC;
+--SELECT *
+--FROM dbo.Meal AS m3;
+--SELECT *
+--FROM dbo.Sleep AS s3;

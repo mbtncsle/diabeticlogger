@@ -20,7 +20,11 @@ BEGIN
             @CARB INT,
             @DIFF_READING INT,
             @DATE DATE,
-            @DATETIME DATETIME;
+            @DATETIME DATETIME,
+			@CONCAT NVARCHAR(MAX);
+
+			SELECT @CONCAT = CONCAT(@MARK, ' ', @MEAL)
+			
 
     WHILE (@RECORD_DATE_START <= @RECORD_DATE_END)
     BEGIN
@@ -28,7 +32,7 @@ BEGIN
         SET @DATE = @RECORD_DATE_START;
         SET @DATETIME = @RECORD_DATE_START;
 
-
+		
 
         IF @MARK = 'BEFORE'
         BEGIN
@@ -40,35 +44,28 @@ BEGIN
         BEGIN
 
             SELECT @CURRENT_READING = b.Reading
-            FROM dbo.BG AS b
-            WHERE b.Meal = @MEAL
-                  AND b.Mark = 'BEFORE'
-                  AND b.RecordDate = @DATE;
+			FROM dbo.BloodGlucose AS b
+			WHERE b.Meal = CONCAT('BEFORE', ' ', @MEAL)
+			AND CAST(b.RecordDate AS DATE) = @DATE;
 
             SELECT @READING = @CURRENT_READING + CAST(10 + (50 - 10) * RAND() AS INT);
-        END;
+        
+		END;
         -- THE FIRST INSERT WILL ALWAYS BE MARKED 'BEFORE'
-        INSERT INTO dbo.BG
+        INSERT INTO dbo.BloodGlucose
         (
-            Mark,
             Meal,
             Reading,
             RecordDate,
-            RecordDateTime,
             Notes
         )
         VALUES
-        (   @MARK,     -- Mark - nvarchar(20)
-            @MEAL,     -- Meal - nvarchar(20)
-            @READING,  -- Reading - int
-            @DATE,     -- RecordDate - datetime
-            @DATETIME, -- RecordDateTime - datetime
+        (   @CONCAT,       -- Meal - nvarchar(20)
+            @READING,         -- Reading - int
+            @DATETIME, -- RecordDate - datetime
             N''        -- Notes - nvarchar(255)
-            );
-
-
-
-
+            )
+       
 
         SELECT @RECORD_DATE_START = DATEADD(d, 1, @RECORD_DATE_START);
 
@@ -76,3 +73,4 @@ BEGIN
 
 
 END; -- END OF SP
+

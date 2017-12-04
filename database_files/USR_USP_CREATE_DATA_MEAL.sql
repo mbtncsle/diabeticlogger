@@ -27,16 +27,14 @@ BEGIN
 
 
         SELECT @READING_BEFORE = b.Reading
-        FROM dbo.BG AS b
-        WHERE b.Meal = @MEAL
-              AND b.Mark = 'BEFORE'
-              AND b.RecordDate = @DATE;
+        FROM dbo.BloodGlucose AS b
+        WHERE b.Meal = CONCAT('BEFORE', ' ', @MEAL)
+              AND CAST(b.RecordDate AS DATE) = @DATE;
 
         SELECT @READING_AFTER = b.Reading
-        FROM dbo.BG AS b
-        WHERE b.Meal = @MEAL
-              AND b.Mark = 'AFTER'
-              AND b.RecordDate = @DATE;
+        FROM dbo.BloodGlucose AS b
+        WHERE b.Meal = CONCAT('AFTER', ' ', @MEAL)
+              AND CAST(b.RecordDate AS DATE) = @DATE;
 
 
         -- FOR THE MEAL table
@@ -60,24 +58,24 @@ BEGIN
                            WHEN @DIFF_READING
                                 BETWEEN 40 AND 50 THEN
                                CAST(20 + (25 - 20) * RAND() AS INT)
+							  ELSE 0
                        END; -- end case
 
-
-        INSERT INTO dbo.M
+        INSERT INTO dbo.Meal
         (
             Meal,
-            TotalCarbs,
+            Reading,
             RecordDate,
-            RecordDateTime,
             Notes
         )
         VALUES
         (   @MEAL,     -- Meal - nvarchar(20)
-            @CARB,     -- TotalCarbs - int
-            @DATE,     -- RecordDate - date
-            @DATETIME, -- RecordDateTime - datetime
+            @CARB,     -- Reading - int
+            @DATETIME, -- RecordDate - datetime
             N''        -- Notes - nvarchar(255)
             );
+
+
 
         SELECT @RECORD_DATE_START = DATEADD(d, 1, @RECORD_DATE_START);
 
