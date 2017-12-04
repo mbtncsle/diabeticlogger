@@ -1,3 +1,4 @@
+# Updated to meet new requirements Tim Camp 12/3/2017
 pyodbc==4.0.21
 pyqt==5.6.0
 pandas==0.21.0
