@@ -6,7 +6,7 @@ class Foodlist(InputWindow):
 	def __init__(self, parent):
 		super(Foodlist, self).__init__(parent, "Input the number of servings")
 
-		#creates variable lvl and sets name as food lists
+		#creates variable lbl and sets name as food lists
 		self.lbl = QLabel("Food List", self) 
 		#set combo and calls the combobox function to be able to modify a drop box
 		self.combo = QComboBox(self)	
@@ -18,8 +18,19 @@ class Foodlist(InputWindow):
 
 		self.combo.activated.connect(self.handleActivated)
 
+		self.lbl_meal = QLabel("Meal List", self)
+
+		self.combo_meal = QComboBox(self)
+		self.combo_meal.addItem("Breakfast")
+		self.combo_meal.addItem("Lunch")
+		self.combo_meal.addItem("Dinner")
+		self.combo_meal.addItem("Snack")
+
+		self.combo_meal.setGeometry(400, 45, 80, 40)
 		self.combo.setGeometry(275, 45, 120, 40)
-		self.lbl.setGeometry(308, 30, 25, 25)
+		self.lbl_meal.move(423, 30)
+		self.lbl.move(308, 30)
+		self.lbl_meal.adjustSize()
 		self.lbl.adjustSize()
 
 		self.show()

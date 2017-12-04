@@ -92,7 +92,7 @@ class InputWindow(QMdiSubWindow):
 
 		self.error_lbl = QLabel(self)
 
-		self.main_lbl.move(115, 30)
+		self.main_lbl.move(100, 30)
 		self.date_lbl.move(290, 195)
 		self.time_lbl.move(293, 115)
 		self.main_qle.setGeometry(100, 45, 120, 40)
@@ -119,11 +119,11 @@ class InputWindow(QMdiSubWindow):
 		lunch = 12
 		dinner = 20
 		if input_type == self.blood_glucose:
-			blood_glucose_crud.blood_glucose_insert(blood_glucose_crud.BloodGlucoseRecord(meal = meal, reading = int(data), record_date = dt))
+			blood_glucose_crud.blood_glucose_insert(blood_glucose_crud.BloodGlucoseRecord(meal = data[0], reading = int(self.main_qle.text()), record_date = dt))
 		elif input_type == self.sleep:
-			sleep_crud.sleep_insert(sleep_crud.SleepRecord(reading = int(data), record_date = dt))
+			sleep_crud.sleep_insert(sleep_crud.SleepRecord(reading = int(self.main_qle.text()), record_date = dt))
 		elif input_type == self.exercise:
-			steps_crud.steps_insert(steps_crud.StepsRecord(reading = int(data), record_date = dt))
+			steps_crud.steps_insert(steps_crud.StepsRecord(reading = int(self.main_qle.text()), record_date = dt))
 		else:
 			id = None
 			for m in meal_crud.meal_select_by_days((datetime.now() - dt).days + 1):
@@ -131,7 +131,7 @@ class InputWindow(QMdiSubWindow):
 					id = m.meal_id
 					break
 			if id == None:
-				id = meal_crud.meal_insert(meal_crud.MealRecord(meal = meal, reading = int(self.main_qle.text()) * int(data[0]), record_date = dt))
+				id = meal_crud.meal_insert(meal_crud.MealRecord(meal = data[2], reading = int(self.main_qle.text()) * int(data[0]), record_date = dt))
 			meal_item_crud.meal_item_insert(meal_item_crud.MealItemRecord(meal_id = id, description = data[1], portions = int(self.main_qle.text()), carbs_per_portion = int(data[0]), total_carbs = int(self.main_qle.text()) * int(data[0])))
 		self.parent.update_data()
 		note = QDialog()

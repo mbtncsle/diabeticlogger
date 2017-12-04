@@ -27,7 +27,7 @@ class LogWindow(QMdiSubWindow):
 		self.frame = QFrame(self.scrollarea)
 		self.frame.setLayout(QVBoxLayout())
 		self.scrollarea.setWidget(self.frame)
-		self.scrollarea.setGeometry(0, 0, 550, 250)
+		self.scrollarea.setGeometry(0, 0, 505, 325)
 
 		self.update()
 
@@ -64,12 +64,13 @@ class LogWindow(QMdiSubWindow):
 			for log in blood_glucose_crud.blood_glucose_select_by_days(30):
 				self.frame.layout().addWidget(QLabel(log.meal + " blood glucose level was " + str(log.reading) + " on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
 				but = QPushButton()
-				but.setText("X")
+				but.setText("Delete")
+				but.setFixedSize(50, 30)
 				but.extra = log.blood_glucose_id
 				but.clicked.connect(self.delete_log)
 				hbox = QHBoxLayout()
 				hbox.addWidget(but)
-				hbox.addStretch(5)
+				hbox.addStretch(1)
 				self.frame.layout().addLayout(hbox)
 		elif self.data == self.food_list:
 			for log in meal_crud.meal_select_by_days(30):
@@ -81,32 +82,35 @@ class LogWindow(QMdiSubWindow):
 				st = st[:-2]
 				self.frame.layout().addWidget(QLabel(log.meal + " was " + st + " at " + str(total_carbs) + " carbs on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
 				but = QPushButton()
-				but.setText("X")
+				but.setText("Delete")
+				but.setFixedSize(50, 30)
 				but.extra = log.meal_id
 				but.clicked.connect(self.delete_log)
 				hbox = QHBoxLayout()
 				hbox.addWidget(but)
-				hbox.addStretch(5)
+				hbox.addStretch(1)
 				self.frame.layout().addLayout(hbox)
 		elif self.data == self.sleep:
 			for log in sleep_crud.sleep_select_by_days(30):
 				self.frame.layout().addWidget(QLabel(str(log.reading) + " hours of sleep on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
 				but = QPushButton()
-				but.setText("X")
+				but.setText("Delete")
+				but.setFixedSize(50, 30)
 				but.extra = log.sleep_id
 				but.clicked.connect(self.delete_log)
 				hbox = QHBoxLayout()
 				hbox.addWidget(but)
-				hbox.addStretch(5)
+				hbox.addStretch(1)
 				self.frame.layout().addLayout(hbox)
 		else:
 			for log in steps_crud.steps_select_by_days(30):
 				self.frame.layout().addWidget(QLabel(str(log.reading) + " steps walked on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
 				but = QPushButton()
-				but.setText("X")
+				but.setText("Delete")
+				but.setFixedSize(50, 30)
 				but.extra = log.steps_id
 				but.clicked.connect(self.delete_log)
 				hbox = QHBoxLayout()
 				hbox.addWidget(but)
-				hbox.addStretch(5)
+				hbox.addStretch(1)
 				self.frame.layout().addLayout(hbox)
