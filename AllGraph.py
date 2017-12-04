@@ -68,7 +68,8 @@ class AllGraph(QDialog):
 				logs = []
 				for log in logs:
 					avg += log.reading
-				avg /= len(logs)
+				if len(logs) > 0:
+					avg /= len(logs)
 				if not ("BG" in max_values) or avg > max_values["BG"]:
 					max_values["BG"] = avg
 				if not ("BG" in min_values) or avg < min_values["BG"]:
@@ -85,6 +86,35 @@ class AllGraph(QDialog):
 				if not ("sleep" in min_values) or total < min_values["sleep"]:
 					min_values["sleep"] = total
 				temp_x_axis["sleep"].append(total)
+			if self.step_check.isChecked():
+				total = 0
+				# Replace empty list with query method
+				logs = []
+				for log in logs:
+					total += log.reading
+				if not ("steps" in max_values) or total > max_values["steps"]:
+					max_values["steps"] = total
+				if not ("steps" in min_values) or total < min_values["steps"]:
+					min_values["steps"] = total
+				temp_x_axis["steps"].append(total)
+			if self.food_check.isChecked():
+				total = 0
+				# Replace empty list with query method
+				logs = []
+				for log in logs:
+					total += log.reading
+				if not ("food" in max_values) or total > max_values["food"]:
+					max_values["food"] = total
+				if not ("food" in min_values) or total < min_values["food"]:
+					min_values["food"] = total
+				temp_x_axis["food"].append(total)
+		for k in temp_x_axis:
+			for i in temp_x_axis[k]:
+				i -= min_values[k]
+				i /= (max_values[k] - min_values[k])
+				i *= 100
+		colors = {"BG": "r-", "sleep": "b-", "steps": "g-", "food": "y-"}
+		self.graph.plot(temp_x_axis, y_axis, "Percentage", "Days before")
 
 class PlotCanvas(FigureCanvas):
 
@@ -97,10 +127,11 @@ class PlotCanvas(FigureCanvas):
 		self.setParent(parent)
  
 
-	def plot(self, nums, ylabel, xlabel):
-		data = nums
+	def plot(self, x_axis, y_axis, ylabel, xlabel, colors):
 		self.axes.clear()
-		self.axes.plot(data[0], data[1], 'r-')
+		for k in x_axis:
+			if len(x_axis[k]) > 0:
+				self.axes.plot(x_axis[k], y_axis, colors[k])
 		self.axes.set_ylabel(ylabel)
 		self.axes.set_xlabel(xlabel)
 		self.draw()
