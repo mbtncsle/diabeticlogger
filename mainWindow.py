@@ -1,24 +1,27 @@
 from PyQt5.QtWidgets import QPushButton, QMdiArea, QApplication, QMainWindow, QAction
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import pyqtSlot
 import qdarkstyle
-from datetime import datetime, timedelta
+from datetime import datetime
 import sys
-from InputWindow import InputWindow
+
+
 from exercise import Exercise
 from foodlist import Foodlist
 from sleep import Sleep
 from bloodglucose import Glucose
+
+
 from RecommendationsWindow import RecommendationsWindow
 from GraphWindow import GraphWindow
 from LogWindow import LogWindow
 from AllGraph import AllGraph
-sys.path.insert(0, "./database_files")
-import blood_glucose_crud
 
 class MainWindow(QMainWindow):
 
 	def __init__(self):
 		super(MainWindow, self).__init__(parent = None)
+
+		self.setWindowTitle("Diabetic Logger")
 
 		# Global variables
 		self.blood_glucose = "BG"
@@ -29,11 +32,13 @@ class MainWindow(QMainWindow):
 		self.window_width = 509
 		self.window_height = 746
 
-		self.margin = 50
-
 		self.setFixedSize(509, 746)
 		# NEW setup stylesheet
 		app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+
+		# Prepare the main area
+		self.mdi = QMdiArea()
+		self.setCentralWidget(self.mdi)
 
 		self.oneDay_qpb = QPushButton("1 day", self)
 		self.oneDay_qpb.setToolTip("This button displays graph for data collected within the day")
@@ -54,20 +59,17 @@ class MainWindow(QMainWindow):
 		self.graph_qpb = QPushButton("Graph", self)
 		self.graph_qpb.setToolTip("This button will display a graphical representation of your blood glucose level")
 		self.graph_qpb.setGeometry(50, 390, 140, 25)
+		self.graph_qpb.clicked.connect(self.window_button_pressed)
 
 		self.log_qpb = QPushButton("Data Sheet", self)
 		self.log_qpb.setToolTip("This button will display your past inputs")
 		self.log_qpb.setGeometry(190, 390, 140, 25)
+		self.log_qpb.clicked.connect(self.window_button_pressed)
 
 		self.recommendation_qpb = QPushButton("Recommendation", self)
 		self.recommendation_qpb.setToolTip("This button will display recommendations for you to take")
 		self.recommendation_qpb.setGeometry(330, 390, 140, 25)
-
-		self.setWindowTitle("Diabetic Logger        A1C Level: " + str(round(self.get_a1c(), 2)))
-
-		# Prepare the main area
-		self.mdi = QMdiArea()
-		self.setCentralWidget(self.mdi)
+		self.recommendation_qpb.clicked.connect(self.window_button_pressed)
 
 		# Prepare the toolbar
 		self.toolbar = self.addToolBar("Toolbar")
@@ -101,29 +103,33 @@ class MainWindow(QMainWindow):
 		self.graph_window.setGeometry(2, 385, 505, 325)
 		self.recommended_window.setGeometry(2, 385, 505, 325)
 		self.log_window.setGeometry(2, 385, 505, 325)
+		self.graph_window.setVisible(False)
+		self.recommended_window.setVisible(False)
 		for k in self.input_windows:
 			self.mdi.addSubWindow(self.input_windows[k])
-			self.input_windows[k].setGeometry(2, 2, 505, 385)
+			self.input_windows[k].setGeometry(2, 2, 505, 325)
 			if k != self.blood_glucose:
 				self.input_windows[k].setVisible(False)
 
 		self.show()
 
-	# determine the a1c
-	def get_a1c(self):
-		total = 0
-		logs = blood_glucose_crud.blood_glucose_select_by_days(30)
-		for log in logs:
-			total += log.reading
-		total /= len(logs)
-		return total
-
 	# update the windows with new data
 	def update_data(self):
-		self.setWindowTitle("Diabetic Logger        A1C Level: " + str(round(self.get_a1c(), 2)))
-		self.graph_window.update(datetime.strptime(self.date_begin.date().toString("MM/dd/yyyy"), "%m/%d/%Y"), datetime.strptime(self.date_end.date().toString("MM/dd/yyyy"), "%m/%d/%Y"))
+		self.graph_window.update()
 		#self.recommended_window.update()
-		self.log_window.update(datetime.strptime(self.date_begin.date().toString("MM/dd/yyyy"), "%m/%d/%Y"), datetime.strptime(self.date_end.date().toString("MM/dd/yyyy"), "%m/%d/%Y"))
+		self.log_window.update()
+
+	@pyqtSlot()
+	def window_button_pressed(self):
+		self.graph_window.setVisible(False)
+		self.recommended_window.setVisible(False)
+		self.log_window.setVisible(False)
+		if self.sender().text() == "Graph":
+			self.graph_window.setVisible(True)
+		if self.sender().text() == "Recommendation":
+			self.recommended_window.setVisible(True)
+		if self.sender().text() == "Data Sheet":
+			self.log_window.setVisible(True)
 
 	def tool_button_pressed(self, button):
 		bt = button.text()

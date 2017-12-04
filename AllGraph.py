@@ -111,10 +111,11 @@ class AllGraph(QDialog):
 		for k in temp_x_axis:
 			for i in temp_x_axis[k]:
 				i -= min_values[k]
-				i /= (max_values[k] - min_values[k])
+				if max_values[k] != min_values[k]:
+					i /= (max_values[k] - min_values[k])
 				i *= 100
 		colors = {"BG": "r-", "sleep": "b-", "steps": "g-", "food": "y-"}
-		self.graph.plot(temp_x_axis, y_axis, "Percentage", "Days before")
+		self.graph.plot(temp_x_axis, y_axis, "Percentage", "Days before", colors)
 
 class PlotCanvas(FigureCanvas):
 
