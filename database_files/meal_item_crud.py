@@ -1,5 +1,5 @@
 import pyodbc
-import db
+from database_files import db
 
 table_name = "MealItem"
 

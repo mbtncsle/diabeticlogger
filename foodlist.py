@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QLabel, QLineEdit, QDateEdit, QPushButton, QMdiSubWindow, QTimeEdit, QComboBox
-from PyQt5.QtCore import QTime, pyqtSlot, Qt
+from PyQt5.QtCore import QTime, pyqtSlot
 from datetime import datetime
 from InputWindow import InputWindow
 
@@ -9,11 +9,10 @@ class Foodlist(InputWindow):
 	def __init__(self, parent):
 		super(Foodlist, self).__init__(parent)
 
-		self.setFocusPolicy(Qt.NoFocus)
-
 		# Create the labels, setting their text, and their locations
 		self.serving_lbl = QLabel(self)
 		self.serving_lbl.setText("Input the number of servings")
+		self.serving_lbl.move(77.5, 27)
 		self.serving_lbl.adjustSize()
 
 		self.error_lbl = QLabel(self)
@@ -21,43 +20,52 @@ class Foodlist(InputWindow):
 
 		self.date_lbl = QLabel(self)
 		self.date_lbl.setText("Please pick a date")
+		self.date_lbl.move(450, 18)
 		self.serving_lbl.adjustSize()
 		
 		self.time_lbl = QLabel(self)
 		self.time_lbl.setText("Please pick a time")
+		self.time_lbl.move(450, 137)
 		self.time_lbl.adjustSize()
 
 		# Create the editing box
 		self.serving_qle = QLineEdit(self)
+		self.serving_qle.move(107.5, 40)
 
 		# Create the date box
 		self.date_qde = QDateEdit(self)
+		self.date_qde.move(450, 40)
 
 		# Create the submit button
 		self.submit_qpb = QPushButton(self)
+		self.submit_qpb.move(450, 280)
 		self.submit_qpb.setText("Submit")
+		self.submit_qpb.adjustSize()
 
 		# Create the numpad buttons
 		self.backspace_qpb = QPushButton(self)
 		self.num_buttons = dict()
 		self.backspace_qpb.setText("Backspace")
+		self.backspace_qpb.move(107.5, 280)
 		self.backspace_qpb.clicked.connect(self.delete)
 		for i in range(0, 10):
 			self.num_buttons["numpad" + str(i)] = QPushButton(self)
 			self.num_buttons["numpad" + str(i)].setText(str(i))
+			self.num_buttons["numpad" + str(i)].adjustSize()
+			self.num_buttons['numpad' + str(i)].move(75*i, 0)
 			self.num_buttons['numpad' + str(i)].clicked.connect(self.numbs)
 
-		self.num_buttons['numpad' + str(1)].move(100, 90)
-		self.num_buttons['numpad' + str(2)].move(140, 90)
-		self.num_buttons['numpad' + str(3)].move(180, 90)
-		self.num_buttons['numpad' + str(4)].move(100, 130)
-		self.num_buttons['numpad' + str(5)].move(140, 130)
-		self.num_buttons['numpad' + str(6)].move(180, 130)
-		self.num_buttons['numpad' + str(7)].move(100, 170)
-		self.num_buttons['numpad' + str(8)].move(140, 170)
-		self.num_buttons['numpad' + str(9)].move(180, 170)
-		self.num_buttons['numpad' + str(0)].setGeometry(40, 40, 80, 40)
-		self.num_buttons['numpad' + str(0)].move(100, 210)
+		self.num_buttons['numpad' + str(0)].move(20, 40)
+		self.num_buttons['numpad' + str(1)].move(40, 120)
+		self.num_buttons['numpad' + str(2)].move(120, 120)
+		self.num_buttons['numpad' + str(3)].move(200, 120)
+		self.num_buttons['numpad' + str(4)].move(40, 160)
+		self.num_buttons['numpad' + str(5)].move(120, 160)
+		self.num_buttons['numpad' + str(6)].move(200, 160)
+		self.num_buttons['numpad' + str(7)].move(40, 200)
+		self.num_buttons['numpad' + str(8)].move(120, 200)
+		self.num_buttons['numpad' + str(9)].move(200, 200)
+		self.num_buttons['numpad' + str(0)].move(120, 240)
 
 
 
@@ -75,6 +83,7 @@ class Foodlist(InputWindow):
 		self.time = QTimeEdit(self)
 		self.time.setDisplayFormat("hh:mm")
 		self.time.setTime(QTime())
+		self.time.move(450, 150)
 		#self.time.adjustSize()
 
 		#foodlist
@@ -91,11 +100,9 @@ class Foodlist(InputWindow):
 
 		self.combo.activated.connect(self.handleActivated)
 
-		self.time.setGeometry(275, 130, 120, 40)
-		self.combo.setGeometry(275, 45, 120, 40)
-		self.lbl.setGeometry(308, 30, 25, 25)
-		self.lbl.adjustSize()
-		self.error_lbl.setGeometry(255, 85, 25, 25)  
+		self.combo.move(300, 40)					
+		self.lbl.move(300, 18)				
+		self.error_lbl.move(300, 70)  
 
 	def handleActivated(self, index):
 		try:		
