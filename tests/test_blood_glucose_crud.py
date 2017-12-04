@@ -4,14 +4,14 @@ import datetime
 from database_files import blood_glucose_crud
 
 
-# =============================================================================
+# ==============================================================================
 # Tests to determine if a Blood Glucose record can be inserted and then
 # retrieved by id
 # Acceptance Criteria for DIAB-125
 #       A record is inserted into the database with specific values
 # Author: Tim Camp
 # Date Created: 11/24/2017
-# =============================================================================
+# ==============================================================================
 def test_insert():
 
     # Specific values
@@ -69,6 +69,40 @@ def test_select_by_days():
     # than the oldest date that should be in the record set
     for record in record_list:
         assert record.record_date >= oldest_date
+
+
+# =============================================================================
+# Tests to determine if a Blood Glucose records be retrieved from the date
+# parameter back in time for the number of days parameter
+# TODO: Correct the acceptance criteria issue tag
+# Acceptance Criteria for DIAB-130
+#       Retrieve records for a number of days in the past
+# =============================================================================
+def test_select_by_date():
+
+    # Specific values
+    start_date = datetime.datetime.strptime('2017-11-25 23:59:59', '%Y-%m-%d %H:%M:%S')
+    include_days = 3
+
+    # Retrieve the records
+    record_list = blood_glucose_crud.select_by_date(start_date=start_date, include_days=include_days)
+
+    # This is done to correctly format the date time for use with Microsoft SQL Server
+    oldest_date = start_date - datetime.timedelta(days=include_days)
+    oldest_date = oldest_date.strftime("%Y-%m-%d 00:00:00")
+    oldest_date = datetime.datetime.strptime(oldest_date, "%Y-%m-%d %H:%M:%S")
+    record_count = 0
+
+    # Test that all the records returned have a record date that is greater
+    # than or equal to the oldest date and less than or equal to the starting date
+    for record in record_list:
+        assert record.record_date >= oldest_date
+        assert record.record_date <= start_date
+        record_count += 1
+
+    # This is a known number of records that are in the database
+    # This number will change if we move to another database
+    assert record_count == 38
 
 
 # =============================================================================

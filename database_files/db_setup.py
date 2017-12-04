@@ -1,12 +1,12 @@
 import datetime
 import random
 import pyodbc
-import db
-import blood_glucose_crud
-import sleep_crud
-import steps_crud
-import meal_crud
-import meal_item_crud
+from database_files import db
+from database_files import blood_glucose_crud
+from database_files import sleep_crud
+from database_files import steps_crud
+from database_files import meal_crud
+from database_files import meal_item_crud
 
 # Number of days to create records for
 days_of_records = 90

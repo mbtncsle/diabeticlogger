@@ -112,6 +112,44 @@ def steps_select_by_days(days):
     return return_steps_records
 
 
+def select_by_date(start_date, include_days):
+    """
+    Returns a list of records from the date specified backwards in time for the number of days specified
+    :param start_date: Date to start from and go back in time
+    :param include_days: days in the past to include
+    :return: List of StepsRecords
+    """
+    oldest_date = start_date - datetime.timedelta(days=include_days)
+
+    sql_statement = "SELECT " + table_name + "Id, Reading, RecordDate, Notes " + \
+                    "FROM " + table_name + " WHERE RecordDate >= '" + oldest_date.strftime("%Y-%m-%d 00:00:00' ") + \
+                    "AND RecordDate <= '" + start_date.strftime("%Y-%m-%d 23:59:59' ") + \
+                    "ORDER BY RecordDate DESC;"
+
+    with db.Db() as cursor:
+        try:
+            cursor.execute(sql_statement)
+        except pyodbc.Error as ex:
+            print(ex.args)
+            return None
+
+        return_steps_records = []
+        row = cursor.fetchone()
+
+        while row:
+            return_steps_records.append(
+                StepsRecord(
+                    steps_id=row.StepsId,
+                    reading=row.Reading,
+                    record_date=row.RecordDate,
+                    notes=row.Notes
+                )
+            )
+            row = cursor.fetchone()
+
+    return return_steps_records
+
+
 def steps_delete(steps_id):
     """
     Deletes a steps record based on StepsId

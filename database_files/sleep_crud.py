@@ -111,6 +111,47 @@ def sleep_select_by_days(days):
     return return_sleep_records
 
 
+def select_by_date(start_date, include_days):
+    """
+    Returns a list of records from the date specified backwards in time for the number of days specified
+    :param start_date: Date to start from and go back in time
+    :param include_days: days in the past to include
+    :return: List of SleepRecords
+    :return: List of SleepRecords
+    """
+    oldest_date = start_date - datetime.timedelta(days=include_days)
+
+    sql_statement = "SELECT " + table_name + "Id, Reading, RecordDate, Notes " + \
+                    "FROM " + table_name + " WHERE RecordDate >= '" + oldest_date.strftime("%Y-%m-%d 00:00:00' ") +\
+                    "AND RecordDate <= '" + start_date.strftime("%Y-%m-%d 23:59:59' ") +\
+                    "ORDER BY RecordDate DESC;"
+
+    print(sql_statement)
+
+    with db.Db() as cursor:
+        try:
+            cursor.execute(sql_statement)
+        except pyodbc.Error as ex:
+            print(ex.args)
+            return None
+
+        return_sleep_records = []
+        row = cursor.fetchone()
+
+        while row:
+            return_sleep_records.append(
+                SleepRecord(
+                    sleep_id=row.SleepId,
+                    reading=row.Reading,
+                    record_date=row.RecordDate,
+                    notes=row.Notes
+                )
+            )
+            row = cursor.fetchone()
+
+    return return_sleep_records
+
+
 def sleep_delete(sleep_id):
     """
     Deletes a sleep record based on SleepId

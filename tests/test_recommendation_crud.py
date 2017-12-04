@@ -1,16 +1,14 @@
-import sys
-sys.path.insert(0, "../database_files")
 from database_files import recommendation_crud
 
 
-# =============================================================================
+# ==============================================================================
 # Tests to determine if a Recommendation record can be inserted and then
 # retrieved by id
 # Acceptance Criteria for DIAB-129
 #       A record is inserted into the database with specific values
 # Author: Tim Camp
 # Date Created: 11/25/2017
-# =============================================================================
+# ==============================================================================
 def test_insert():
 
     # Specific values
