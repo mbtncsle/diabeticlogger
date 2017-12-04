@@ -1,5 +1,5 @@
 import pyodbc
-from database_files import db
+import db
 
 table_name = "Recommendation"
 
