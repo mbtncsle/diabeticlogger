@@ -10,6 +10,7 @@ from bloodglucose import Glucose
 from RecommendationsWindow import RecommendationsWindow
 from GraphWindow import GraphWindow
 from LogWindow import LogWindow
+from AllGraph import AllGraph
 sys.path.insert(0, "./database_files")
 import blood_glucose_crud
 
@@ -68,10 +69,10 @@ class MainWindow(QMainWindow):
 
 		self.date_lbl = QLabel("to", self)
 		self.date_lbl.adjustSize()
-		self.date_lbl.move(self.window_width - self.sub_window_width + self.date_begin.size().width() + 10, self.sub_window_height + self.date_begin.size().height() // 2 - self.date_lbl.size().height() // 2 + 30)
+		self.date_lbl.move(self.date_begin.pos().x() + self.date_begin.size().width() + 10, self.date_begin.pos().y() + self.date_begin.size().height() // 2 - self.date_lbl.size().height() // 2)
 
 		self.date_end = QDateEdit(self)
-		self.date_end.move(self.window_width - self.sub_window_width + self.date_begin.size().width() + self.date_lbl.size().width() + 20, self.sub_window_height + 30)
+		self.date_end.move(self.date_lbl.pos().x() + self.date_lbl.size().width() + 10, self.date_begin.pos().y())
 		self.date_end.setDisplayFormat("MM/dd/yyyy")
 		self.date_end.setCalendarPopup(True)
 		self.date_end.setDate(datetime.now())
@@ -138,6 +139,8 @@ class MainWindow(QMainWindow):
 				self.input_windows[k].setVisible(False)
 			self.input_windows[self.food_intake].setVisible(True)
 			num = 4
+		elif bt == "Graph of all data":
+			self.all_graph = AllGraph()
 		if num != 0:
 			self.graph_window.change_data(num)
 			self.log_window.change_data(num)
