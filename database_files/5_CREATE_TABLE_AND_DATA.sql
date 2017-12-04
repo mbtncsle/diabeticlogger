@@ -1,7 +1,5 @@
 USE DiabeticLogger;
 GO
---EXEC dbo.USR_USP_CREATE_BASE_TABLES;
---GO
 
 TRUNCATE TABLE dbo.BloodGlucose
 TRUNCATE TABLE dbo.Meal
@@ -57,17 +55,3 @@ GO
 EXEC dbo.USR_USP_CREATE_DATA_SLEEP; 
 
 GO
-
- --EXEC dbo.USR_USP_CREATE_DATA_MEAL @MEAL = 'BREAKFAST',                           -- nvarchar(max)
- --                                     @RECORD_DATE_START = '2017-12-03', -- date
- --                                     @RECORD_DATE_END = '2017-12-04';
-
---SELECT *
---FROM dbo.BG AS b
---ORDER BY b.RecordDate ASC,
---         b.Meal ASC,
---         b.Mark DESC;
---SELECT *
---FROM dbo.Meal AS m3;
---SELECT *
---FROM dbo.Sleep AS s3;

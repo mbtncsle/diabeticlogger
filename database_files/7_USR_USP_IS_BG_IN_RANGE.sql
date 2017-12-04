@@ -1,0 +1,46 @@
+USE DiabeticLogger;
+GO
+IF OBJECT_ID('diabeticlogger.dbo.USR_USP_IS_BG_IN_RANGE') IS NOT NULL
+    DROP PROC dbo.USR_USP_IS_BG_IN_RANGE;
+GO
+CREATE PROC dbo.USR_USP_IS_BG_IN_RANGE (@READING INT)
+AS
+BEGIN
+
+    DECLARE @MESSAGE NVARCHAR(MAX);
+
+    IF @READING < 30
+    BEGIN
+        SELECT @MESSAGE = 'DANGER!! YOU COULD SUFFER FROM AN HYPOGLYCEMIC ATTACK! EAT SUGAR NOW!!';
+    END;
+
+    ELSE IF @READING
+            BETWEEN 30 AND 90
+    BEGIN
+        SELECT @MESSAGE = 'WARNING!! Your sugar is very low!';
+    END;
+
+    ELSE IF @READING
+            BETWEEN 90 AND 130 + 1
+    BEGIN
+        SELECT @MESSAGE = 'Good job! Your blood glucose is in range!';
+    END;
+
+    ELSE IF @READING
+            BETWEEN 131 AND 300
+    BEGIN
+        SELECT @MESSAGE = 'Becareful!! Your sugar is very high!';
+    END;
+
+    ELSE IF @READING > 300
+    BEGIN
+        SELECT @MESSAGE = 'DANGER!! YOU COULD SUFFER FROM AN HYPERGLYCEMIC ATTACK! REDUCE YOUR BG LEVEL NOW!!';
+    END;
+
+
+    SELECT @MESSAGE;
+
+END;
+GO
+--TEST
+EXEC dbo.USR_USP_IS_BG_IN_RANGE @READING = 120;
