@@ -116,6 +116,14 @@ class InputWindow(QMdiSubWindow):
 		if len(string) > 0:
 			self.main_qle.setText(string[:-1])
 
+	# Return all inputs necessary for logging inputs
+	def get_inputs(self):
+		return [self.main_qle.text(), self.date_qde.date(), self.time.time()]
+
+	# Call parent update
+	def update(self):
+		self.parent.update_data()
+
 	# Log the given input
 	def log_input(self, input_type, data):
 		self.set_error("")
