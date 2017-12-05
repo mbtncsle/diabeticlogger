@@ -80,7 +80,6 @@ class MainWindow(QMainWindow):
 		QAction("Food Intake", self),
 		QAction("Hours of Sleep", self),
 		QAction("Steps Walked", self),
-		QAction("Notifications", self),
 		QAction("Graph of all data", self)
 		]
 
@@ -90,25 +89,6 @@ class MainWindow(QMainWindow):
 			self.toolbar.insertSeparator(i)
 		self.toolbar.insertSeparator(None)
 		self.toolbar.actionTriggered[QAction].connect(self.tool_button_pressed)
-
-		# Setup the date selectors for the data with their label
-		self.date_begin = QDateEdit(self)
-		self.date_begin.move(self.window_width - self.sub_window_width, self.sub_window_height + 30)
-		self.date_begin.setDisplayFormat("MM/dd/yyyy")
-		self.date_begin.setCalendarPopup(True)
-		self.date_begin.setDate(datetime.now() - timedelta(days = 30))
-		self.date_begin.dateChanged.connect(self.update_data)
-
-		self.date_lbl = QLabel("to", self)
-		self.date_lbl.adjustSize()
-		self.date_lbl.move(self.date_begin.pos().x() + self.date_begin.size().width() + 10, self.date_begin.pos().y() + self.date_begin.size().height() // 2 - self.date_lbl.size().height() // 2)
-
-		self.date_end = QDateEdit(self)
-		self.date_end.move(self.date_lbl.pos().x() + self.date_lbl.size().width() + 10, self.date_begin.pos().y())
-		self.date_end.setDisplayFormat("MM/dd/yyyy")
-		self.date_end.setCalendarPopup(True)
-		self.date_end.setDate(datetime.now())
-		self.date_end.dateChanged.connect(self.update_data)
 
 		# Create each of the sub windows
 		self.input_windows = {self.blood_glucose: Glucose(self), self.food_intake: Foodlist(self), self.sleep_hours: Sleep(self), self.walk_steps: Exercise(self)}

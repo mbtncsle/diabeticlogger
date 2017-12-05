@@ -28,5 +28,4 @@ class Glucose(InputWindow):
 		try:
 			super(Glucose, self).log_input(1, [self.combo.currentText()])
 		except Exception as e:
-			super().error_lbl.setText("Invalid Input")
-			super().error_lbl.adjustSize()
+			super(Glucose, self).set_error("Invalid Input")

@@ -10,7 +10,6 @@ class Exercise(InputWindow):
 	# Function for submitting data
 	def submit(self):
 		try:
-			super().log_input(3, [])
+			super(Exercise, self).log_input(3, [])
 		except Exception as e:
-			super().error_lbl.setText("Invalid input")
-			super().error_lbl.adjustSize()
+			super(Exercise, self).set_error("Invalid input")

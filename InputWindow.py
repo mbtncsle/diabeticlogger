@@ -102,6 +102,10 @@ class InputWindow(QMdiSubWindow):
 		self.time.setGeometry(275, 130, 120, 40)
 		self.error_lbl.move(255, 85)
 
+	def set_error(self, text):
+		self.error_lbl.setText(text)
+		self.error_lbl.adjustSize()
+
 	@pyqtSlot()
 	def numbs(self):
 		self.main_qle.setText(self.main_qle.text() + str(self.sender().text()))
@@ -114,6 +118,7 @@ class InputWindow(QMdiSubWindow):
 
 	# Log the given input
 	def log_input(self, input_type, data):
+		self.set_error("")
 		dt = datetime.strptime(self.date_qde.date().toString("yyyy-MM-dd") + " " + self.time.time().toString("hh:mm") + ":00", "%Y-%m-%d %H:%M:%S")
 		breakfast = 8
 		lunch = 12

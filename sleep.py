@@ -10,7 +10,6 @@ class Sleep(InputWindow):
 	# Function for submitting data
 	def submit(self):
 		try:
-			super().log_input(2, [])
+			super(Sleep, self).log_input(2, [])
 		except Exception as e:
-			super().error_lbl.setText("Invalid Input")
-			super().error_lbl.adjustSize()
+			super(Sleep, self).set_error("Invalid Input")

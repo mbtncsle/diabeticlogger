@@ -16,7 +16,8 @@ class Foodlist(InputWindow):
 		self.combo.addItem("Milk - 12g", 12)
 		self.combo.addItem("Stir Fry - 7g", 7)
 
-		self.combo.activated.connect(self.handleActivated)
+		# Unnescesary
+		# self.combo.activated.connect(self.handleActivated)
 
 		self.lbl_meal = QLabel("Meal List", self)
 
@@ -35,26 +36,24 @@ class Foodlist(InputWindow):
 
 		self.show()
 
-	def handleActivated(self, index):
-		try:		
-			carbValue = self.combo.itemData(index)
-			totalCarbs = carbValue * int(super().serving_qle.text())
-			super().error_lbl.setText("")
-		except Exception as e:
-			super().error_lbl.setText("Wrong input on the serving size")
-			super().error_lbl.adjustSize()
+	# def handleActivated(self, index):
+	# 	try:		
+	# 		carbValue = self.combo.itemData(index)
+	# 		totalCarbs = carbValue * int(super(Foodlist, self).main_qle.text())
+	# 	except Exception as e:
+	# 		super(Foodlist, self).set_error("Wrong input on the serving size")
 
-		#calculates number of carbs times the serving size
+	# 	#calculates number of carbs times the serving size
 
 
-		#Obtained the string name of the food and number of carbs
-		#self.combo.itemText(index)
+	# 	#Obtained the string name of the food and number of carbs
+	# 	#self.combo.itemText(index)
 
 	# Function for submitting data
 	def submit(self):
 		try:
 			int(self.combo.itemData(self.combo.currentIndex()))
-			super().log_input(4, [self.combo.itemData(self.combo.currentIndex()), self.combo.currentText().split("-")[0][:-1]])
+			super(Foodlist, self).log_input(4, [self.combo.itemData(self.combo.currentIndex()), self.combo.currentText().split("-")[0][:-1], self.combo_meal.itemData(self.combo_meal.currentIndex())])
 		except Exception as e:
 			self.error_lbl.setText("Invalid Input")
 			self.error_lbl.adjustSize()
