@@ -29,10 +29,15 @@ class Glucose(InputWindow):
 
 	# Function for submitting data
 	def submit(self):
+		inputs = super(Glucose, self).get_inputs()
 		try:
-			inputs = super(Glucose, self).get_inputs()
-			dt = datetime.strptime(inputs[1].toString("yyyy-MM-dd") + " " + inputs[2].toString("hh:mm") + ":00", "%Y-%m-%d %H:%M:%S")
-			blood_glucose_crud.blood_glucose_insert(blood_glucose_crud.BloodGlucoseRecord(meal = self.combo.currentText(), reading = int(inputs[0]), record_date = dt))
-			super(Glucose, self).update()
+			int(inputs[0])
+			inputs[1].toString("yyyy-MM-dd")
+			inputs[2].toString("hh:mm")
 		except Exception as e:
 			super(Glucose, self).set_error("Invalid Input")
+			return
+		dt = datetime.strptime(inputs[1].toString("yyyy-MM-dd") + " " + inputs[2].toString("hh:mm") + ":00", "%Y-%m-%d %H:%M:%S")
+		blood_glucose_crud.blood_glucose_insert(blood_glucose_crud.BloodGlucoseRecord(meal = self.combo.currentText(), reading = int(inputs[0]), record_date = dt))
+		super(Glucose, self).update()
+		super(Glucose, self).submit_notify()
