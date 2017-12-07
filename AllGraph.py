@@ -12,25 +12,6 @@ class AllGraph(QDialog):
 	def __init__(self):
 		super(AllGraph, self).__init__(parent = None)
 
-		# Setup the date selectors for the data with their label
-		self.date_begin = QDateEdit(self)
-		self.date_begin.move(0, 0)
-		self.date_begin.setDisplayFormat("MM/dd/yyyy")
-		self.date_begin.setCalendarPopup(True)
-		self.date_begin.setDate(datetime.now() - timedelta(days = 30))
-		self.date_begin.dateChanged.connect(self.update)
-
-		self.date_lbl = QLabel("to", self)
-		self.date_lbl.adjustSize()
-		self.date_lbl.move(self.date_begin.size().width() + 10, self.date_begin.size().height() // 2 - self.date_lbl.size().height() // 2)
-
-		self.date_end = QDateEdit(self)
-		self.date_end.move(self.date_lbl.pos().x() + self.date_lbl.size().width() + 10, 0)
-		self.date_end.setDisplayFormat("MM/dd/yyyy")
-		self.date_end.setCalendarPopup(True)
-		self.date_end.setDate(datetime.now())
-		self.date_end.dateChanged.connect(self.update)
-
 		# Setup the checkboxes
 		self.BG_check = QCheckBox("Blood Glucose", self)
 		self.sleep_check = QCheckBox("Hours of Sleep", self)
@@ -42,80 +23,103 @@ class AllGraph(QDialog):
 		self.step_check.setChecked(True)
 		self.food_check.setChecked(True)
 
+		self.BG_check.stateChanged.connect(self.update)
+		self.sleep_check.stateChanged.connect(self.update)
+		self.step_check.stateChanged.connect(self.update)
+		self.food_check.stateChanged.connect(self.update)
+
 		self.BG_check.move(0, 30)
 		self.sleep_check.move(0, 50)
 		self.step_check.move(0, 70)
 		self.food_check.move(0, 90)
 
 		self.graph = PlotCanvas(self)
-		self.graph.setGeometry(self.date_end.pos().x() + self.date_end.size().width() + 10, 0, 550, 320)
+		self.graph.setGeometry(self.sleep_check.pos().x() + self.sleep_check.size().width() + 10, 0, 550, 320)
 
 		self.update()
 
 		self.show()
 
+	# Turn a list into percentages
+	def get_percentage(self, l):
+		if len(l) == 0:
+			return l
+
+		maxi = l[0]
+		mini = l[0]
+
+		for log in l:
+			if log > maxi:
+				maxi = log
+			elif log < mini:
+				mini = log
+
+		maxi -= mini
+		maxi /= 100
+
+		for log in range(0, len(l)):
+			l[log] -= mini
+			l[log] /= maxi
+
+		return l
+
 	# Update the view
 	def update(self):
-		temp_x_axis = {"BG": [], "sleep": [], "steps": [], "food": []}
-		y_axis = []
-		max_values = dict()
-		min_values = dict()
-		for i in range((datetime.now() - datetime.strptime(self.date_end.date().toString("MM/dd/yyyy"), "%m/%d/%Y")).days, -1, -1):
-			y_axis.append(i)
-			if self.BG_check.isChecked():
-				avg = 0
-				# Replace empty list with query method
-				logs = []
-				for log in logs:
-					avg += log.reading
-				if len(logs) > 0:
-					avg /= len(logs)
-				if not ("BG" in max_values) or avg > max_values["BG"]:
-					max_values["BG"] = avg
-				if not ("BG" in min_values) or avg < min_values["BG"]:
-					min_values["BG"] = avg
-				temp_x_axis["BG"].append(avg)
-			if self.sleep_check.isChecked():
+		previous_days = 30
+		y_axis = {"BG": [], "sleep": [], "steps": [], "food": []}
+		x_axis = {"BG": [], "sleep": [], "steps": [], "food": []}
+
+		if self.BG_check.isChecked():
+			for log in blood_glucose_crud.blood_glucose_select_by_days(previous_days):
+				d = (datetime.now() - log.record_date).days
+				if not (d in x_axis["BG"]):
+					x_axis["BG"].append(d)
+					y_axis["BG"].append([log.reading])
+				else:
+					y_axis["BG"][x_axis["BG"].index(d)].append(log.reading)
+			for i in range(0, len(y_axis["BG"])):
 				total = 0
-				# Replace empty list with query method
-				logs = []
-				for log in logs:
-					total += log.reading
-				if not ("sleep" in max_values) or total > max_values["sleep"]:
-					max_values["sleep"] = total
-				if not ("sleep" in min_values) or total < min_values["sleep"]:
-					min_values["sleep"] = total
-				temp_x_axis["sleep"].append(total)
-			if self.step_check.isChecked():
+				for y in y_axis["BG"][i]:
+					total += y
+				total /= len(y_axis["BG"][i])
+				y_axis["BG"][i] = total
+
+		if self.sleep_check.isChecked():
+			for log in sleep_crud.sleep_select_by_days(previous_days):
+				d = (datetime.now() - log.record_date).days
+				if not (d in x_axis["sleep"]):
+					x_axis["sleep"].append(d)
+					y_axis["sleep"].append(log.reading)
+				else:
+					y_axis["sleep"][x_axis["sleep"].index(d)] += log.reading
+
+		if self.step_check.isChecked():
+			for log in steps_crud.steps_select_by_days(previous_days):
+				d = (datetime.now() - log.record_date).days
+				if not (d in x_axis["steps"]):
+					x_axis["steps"].append(d)
+					y_axis["steps"].append(log.reading)
+				else:
+					y_axis["steps"][x_axis["steps"].index(d)] += log.reading
+
+		if self.food_check.isChecked():
+			for log in meal_crud.meal_select_by_days(previous_days):
+				d = (datetime.now() - log.record_date).days
 				total = 0
-				# Replace empty list with query method
-				logs = []
-				for log in logs:
-					total += log.reading
-				if not ("steps" in max_values) or total > max_values["steps"]:
-					max_values["steps"] = total
-				if not ("steps" in min_values) or total < min_values["steps"]:
-					min_values["steps"] = total
-				temp_x_axis["steps"].append(total)
-			if self.food_check.isChecked():
-				total = 0
-				# Replace empty list with query method
-				logs = []
-				for log in logs:
-					total += log.reading
-				if not ("food" in max_values) or total > max_values["food"]:
-					max_values["food"] = total
-				if not ("food" in min_values) or total < min_values["food"]:
-					min_values["food"] = total
-				temp_x_axis["food"].append(total)
-		for k in temp_x_axis:
-			for i in temp_x_axis[k]:
-				i -= min_values[k]
-				if max_values[k] != min_values[k]:
-					i /= (max_values[k] - min_values[k])
-				i *= 100
+				for m in log.meal_items:
+					total += m.total_carbs
+				if not (d in x_axis["food"]):
+					x_axis["food"].append(d)
+					y_axis["food"].append(total)
+				else:
+					y_axis["food"][x_axis["food"].index(d)] += total
+
+		for key in y_axis:
+			y_axis[key] = self.get_percentage(y_axis[key])
+
 		colors = {"BG": "r-", "sleep": "b-", "steps": "g-", "food": "y-"}
-		self.graph.plot(temp_x_axis, y_axis, "Percentage", "Days before", colors)
+		labels = {"BG": "Blood Glucose", "sleep": "Sleep", "steps": "Steps", "food": "Carbs"}
+		self.graph.plot(x_axis, y_axis, "Percentage", "Days before", colors, labels)
 
 class PlotCanvas(FigureCanvas):
 
@@ -128,11 +132,12 @@ class PlotCanvas(FigureCanvas):
 		self.setParent(parent)
  
 
-	def plot(self, x_axis, y_axis, ylabel, xlabel, colors):
+	def plot(self, x_axis, y_axis, ylabel, xlabel, colors, labels):
 		self.axes.clear()
-		for k in x_axis:
-			if len(x_axis[k]) > 0:
-				self.axes.plot(x_axis[k], y_axis, colors[k])
+		for k in y_axis:
+			if len(y_axis[k]) > 0:
+				self.axes.plot(x_axis[k], y_axis[k], colors[k], label = labels[k])
+		self.axes.legend()
 		self.axes.set_ylabel(ylabel)
 		self.axes.set_xlabel(xlabel)
 		self.draw()
