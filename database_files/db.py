@@ -23,7 +23,7 @@ class Db:
         try:
             self.__connection = pyodbc.connect(connection_string, autocommit=True)
             self.__cursor = self.__connection.cursor()
-
+           
         except pyodbc.Error as ex:
             print(ex.args)
 

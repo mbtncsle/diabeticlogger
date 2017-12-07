@@ -1,29 +1,17 @@
 #retrieve bloodGlucose Info
 
-
-
 import pandas as pd
-
 import dateutil as date
-
 import numpy as np
 
 import datetime as dt 
-
 import statistics as stats
 
 import blood_glucose_crud as bgc
-
 import importlib.util
-
 import sys
 
-
-
-
-
 #returns a list of classes of the type Blood Glucose
-
 listOfBloodGlucoseClasses = bgc.blood_glucose_select_by_days(90)
 
 

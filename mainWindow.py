@@ -74,6 +74,7 @@ class MainWindow(QMainWindow):
 		self.recommendation_qpb.setToolTip("This button will display recommendations for you to take")
 		self.recommendation_qpb.setGeometry(330, 390, 140, 25)
 		self.recommendation_qpb.clicked.connect(self.window_button_pressed)
+	
 
 		# Prepare the toolbar
 		self.toolbar = self.addToolBar("Toolbar")
@@ -97,7 +98,7 @@ class MainWindow(QMainWindow):
 		# Create each of the sub windows
 		self.input_windows = {self.blood_glucose: Glucose(self), self.food_intake: Foodlist(self), self.sleep_hours: Sleep(self), self.walk_steps: Exercise(self)}
 		self.graph_window = GraphWindow()
-		self.recommended_window = RecommendationsWindow()
+		self.recommended_window = RecommendationsWindow(self)
 		self.log_window = LogWindow(self)
 
 		# Hide everything but the blood glucose and add it all to the main window
@@ -109,6 +110,7 @@ class MainWindow(QMainWindow):
 		self.log_window.setGeometry(2, 385, 505, 325)
 		self.graph_window.setVisible(False)
 		self.recommended_window.setVisible(False)
+		
 		for k in self.input_windows:
 			self.mdi.addSubWindow(self.input_windows[k])
 			self.input_windows[k].setGeometry(2, 2, 505, 325)
@@ -124,8 +126,9 @@ class MainWindow(QMainWindow):
 	# update the windows with new data
 	def update_data(self):
 		self.graph_window.update(self.previous_days)
-		#self.recommended_window.update()
+		self.recommended_window.update(self.previous_days)
 		self.log_window.update(self.previous_days)
+		
 
 	@pyqtSlot()
 	def days_button_pressed(self):
@@ -179,7 +182,10 @@ class MainWindow(QMainWindow):
 		if num != 0:
 			self.graph_window.change_data(num)
 			self.log_window.change_data(num)
+			#add recommendation window to main window
+			self.recommended_window.change_data(num)
 			self.update_data()
+			
 
 app = QApplication(sys.argv)
 inp = MainWindow()
