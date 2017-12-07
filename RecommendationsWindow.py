@@ -59,7 +59,7 @@ class RecommendationsWindow(QMdiSubWindow):
 			get_montly_bg_average(self)
 			
 		elif self.data == self.food_list:
-		
+			how_last_meal_affected_bg(self)
 			what_to_eat(self, previous_days)
 			
 		elif self.data == self.sleep:
@@ -86,6 +86,12 @@ def is_bg_in_range(self):
 
 def what_to_eat(self, previous_days):
 	query= "EXEC USR_USP_GET_AVERAGE_BG_PER_CARB_RATIO_BETWEEN_DATES @DAYS = '" + str(previous_days) + "'"
+	reading = execute_sql_fetchall(query)
+	for recommendation in reading:
+		self.frame.layout().addWidget(QLabel(recommendation))
+
+def how_last_meal_affected_bg(self):
+	query= "EXEC USR_USP_HOW_LAST_MEAL_AFFECTED_BG"
 	reading = execute_sql_fetchall(query)
 	for recommendation in reading:
 		self.frame.layout().addWidget(QLabel(recommendation))

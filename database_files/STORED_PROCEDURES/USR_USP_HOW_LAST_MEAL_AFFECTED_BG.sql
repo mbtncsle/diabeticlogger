@@ -1,9 +1,9 @@
 USE DiabeticLogger;
 GO
-IF OBJECT_ID('diabeticlogger.dbo.USR_USP_AVERAGE_BG_BETWEEN_DATES') IS NOT NULL
-    DROP PROC dbo.USR_USP_AVERAGE_BG_BETWEEN_DATES;
+IF OBJECT_ID('diabeticlogger.dbo.USR_USP_HOW_LAST_MEAL_AFFECTED_BG') IS NOT NULL
+    DROP PROC dbo.USR_USP_HOW_LAST_MEAL_AFFECTED_BG;
 GO
-CREATE PROC dbo.USR_USP_AVERAGE_BG_BETWEEN_DATES
+CREATE PROC dbo.USR_USP_HOW_LAST_MEAL_AFFECTED_BG
 --(
 --    @DAYS NVARCHAR(20)
 --)
@@ -17,11 +17,11 @@ BEGIN
 
   
     DECLARE @BG_MESSAGE_INCREASE NVARCHAR(MAX)
-        = 'For <MEAL>, you consumed <CARB> carbs - increasing your BG level by <BG> mg/dl.';
+        = 'Your last meal was <MEAL>, you consumed <CARB> carbs - increasing your BG level by <BG> mg/dl.';
     DECLARE @BG_MESSAGE_DECREASE NVARCHAR(MAX)
-        = 'For <MEAL>, you consumed <CARB> carbs - decreasing your BG level by <BG> mg/dl.';
+        = 'Your last meal was <MEAL>, you consumed <CARB> carbs - decreasing your BG level by <BG> mg/dl.';
     DECLARE @BG_MESSAGE_SAME NVARCHAR(MAX)
-        = 'For <MEAL>, you did not consumed any carbs. Your new BG level is <BG> mg/dl.';
+        = 'Your last meal was <MEAL>, you did not consumed any carbs. Your new BG level is <BG> mg/dl.';
 
     DECLARE @MEAL NVARCHAR(MAX),
             @CARB INT,
@@ -129,4 +129,4 @@ BEGIN
 
 END;
 GO
-EXEC dbo.USR_USP_AVERAGE_BG_BETWEEN_DATES --@DAYS = '30'   -- date
+EXEC dbo.USR_USP_HOW_LAST_MEAL_AFFECTED_BG --@DAYS = '30'   -- date
