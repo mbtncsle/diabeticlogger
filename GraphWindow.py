@@ -26,24 +26,20 @@ class GraphWindow(QMdiSubWindow):
 		self.graph = PlotCanvas(self)
 		self.graph.setGeometry(0, 0, 550, 320)
 
-		self.update()
-
 		self.show()
 
 	# Change which data is graphed
 	def change_data(self, data):
 		self.data = data
-		self.update()
 
 	# Get data and graph it
-	def update(self, begin = datetime.now() - timedelta(days = 30), end = datetime.now()):
-		days = 10
+	def update(self, previous_days):
 		x_axis = []
 		y_axis = []
 		xl = "Days Passed"
 		if self.data == self.blood_glucose:
 			yl = "Blood Glucose"
-			for log in blood_glucose_crud.blood_glucose_select_by_days(days):
+			for log in blood_glucose_crud.blood_glucose_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
 				if not (d in x_axis):
 					x_axis.append(d)
@@ -59,7 +55,7 @@ class GraphWindow(QMdiSubWindow):
 			x_axis, y_axis = self.update_sort(x_axis, y_axis)
 		elif self.data == self.sleep:
 			yl = "Hours Slept"
-			for log in sleep_crud.sleep_select_by_days(days):
+			for log in sleep_crud.sleep_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
 				if not (d in x_axis):
 					x_axis.append(d)
@@ -68,7 +64,7 @@ class GraphWindow(QMdiSubWindow):
 					y_axis[x_axis.index(d)] += log.reading
 		elif self.data == self.exercise:
 			yl = "Steps Walked"
-			for log in steps_crud.steps_select_by_days(days):
+			for log in steps_crud.steps_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
 				if not (d in x_axis):
 					x_axis.append(d)
@@ -77,7 +73,7 @@ class GraphWindow(QMdiSubWindow):
 					y_axis[x_axis.index(d)] += log.reading
 		else:
 			yl = "Carbs ate"
-			for log in meal_crud.meal_select_by_days(days):
+			for log in meal_crud.meal_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
 				total = 0
 				for m in log.meal_items:

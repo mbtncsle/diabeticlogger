@@ -40,21 +40,25 @@ class MainWindow(QMainWindow):
 		self.mdi = QMdiArea()
 		self.setCentralWidget(self.mdi)
 
-		self.oneDay_qpb = QPushButton("1 day", self)
+		self.oneDay_qpb = QPushButton("1 Day", self)
 		self.oneDay_qpb.setToolTip("This button displays graph for data collected within the day")
 		self.oneDay_qpb.setGeometry(50, 365, 105, 25)
+		self.oneDay_qpb.clicked.connect(self.days_button_pressed)
 
 		self.oneWeek_qpb = QPushButton("1 Week", self)
 		self.oneWeek_qpb.setToolTip("This button displays graph for data collected within the week")
 		self.oneWeek_qpb.setGeometry(155, 365, 105, 25)
+		self.oneWeek_qpb.clicked.connect(self.days_button_pressed)
 
 		self.oneMonth_qpb = QPushButton("1 Month", self)
 		self.oneMonth_qpb.setToolTip("This button displays graph for data collected within the month")
 		self.oneMonth_qpb.setGeometry(260, 365, 105, 25)
+		self.oneMonth_qpb.clicked.connect(self.days_button_pressed)
 
 		self.oneYear_qpb = QPushButton("1 Year", self)
 		self.oneYear_qpb.setToolTip("This button displays graph for data collected within the yar")
 		self.oneYear_qpb.setGeometry(365, 365, 105, 25)
+		self.oneYear_qpb.clicked.connect(self.days_button_pressed)
 
 		self.graph_qpb = QPushButton("Graph", self)
 		self.graph_qpb.setToolTip("This button will display a graphical representation of your blood glucose level")
@@ -111,14 +115,29 @@ class MainWindow(QMainWindow):
 			if k != self.blood_glucose:
 				self.input_windows[k].setVisible(False)
 
+		self.previous_days = 30
+
 		self.setGeometry(100, 30, self.window_width, self.window_height)
+		self.update_data()
 		self.show()
 
 	# update the windows with new data
 	def update_data(self):
-		self.graph_window.update()
+		self.graph_window.update(self.previous_days)
 		#self.recommended_window.update()
-		self.log_window.update()
+		self.log_window.update(self.previous_days)
+
+	@pyqtSlot()
+	def days_button_pressed(self):
+		if self.sender().text() == "1 Day":
+			self.previous_days = 1
+		if self.sender().text() == "1 Week":
+			self.previous_days = 7
+		if self.sender().text() == "1 Month":
+			self.previous_days = 30
+		if self.sender().text() == "1 Year":
+			self.previous_days = 365
+		self.update_data()
 
 	@pyqtSlot()
 	def window_button_pressed(self):
@@ -160,6 +179,7 @@ class MainWindow(QMainWindow):
 		if num != 0:
 			self.graph_window.change_data(num)
 			self.log_window.change_data(num)
+			self.update_data()
 
 app = QApplication(sys.argv)
 inp = MainWindow()

@@ -2,8 +2,6 @@ from PyQt5.QtWidgets import QMdiSubWindow, QPushButton, QDialog, QLabel, QLineEd
 from PyQt5.QtCore import Qt, pyqtSlot, QTime
 from datetime import datetime
 import sys
-sys.path.insert(0, "./database_files")
-import blood_glucose_crud, meal_crud, meal_item_crud, sleep_crud, steps_crud
 
 class InputWindow(QMdiSubWindow):
 	
@@ -138,12 +136,4 @@ class InputWindow(QMdiSubWindow):
 	# Log the given input
 	def log_input(self, input_type, data):
 		self.set_error("")
-		id = None
-		for m in meal_crud.meal_select_by_days((datetime.now() - dt).days + 1):
-			if m.record_date == dt:
-				id = m.meal_id
-				break
-		if id == None:
-			id = meal_crud.meal_insert(meal_crud.MealRecord(meal = data[2], reading = int(self.main_qle.text()) * int(data[0]), record_date = dt))
-		meal_item_crud.meal_item_insert(meal_item_crud.MealItemRecord(meal_id = id, description = data[1], portions = int(self.main_qle.text()), carbs_per_portion = int(data[0]), total_carbs = int(self.main_qle.text()) * int(data[0])))
 		self.update()
