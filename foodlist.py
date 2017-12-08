@@ -38,6 +38,8 @@ class Foodlist(InputWindow):
 		self.lbl_meal.adjustSize()
 		self.lbl.adjustSize()
 
+		super(Foodlist, self).set_units("servings")
+
 		self.show()
 
 	# def handleActivated(self, index):

@@ -37,6 +37,8 @@ class InputWindow(QMdiSubWindow):
 		self.time_lbl.setText("Please pick a time")
 		self.time_lbl.adjustSize()
 
+		self.unit_lbl = QLabel(self)
+
 		# Create the editing box
 		self.main_qle = QLineEdit(self)
 
@@ -93,6 +95,7 @@ class InputWindow(QMdiSubWindow):
 		self.main_lbl.move(100, 30)
 		self.date_lbl.move(290, 195)
 		self.time_lbl.move(293, 115)
+		self.unit_lbl.move(225, 45)
 		self.main_qle.setGeometry(100, 45, 120, 40)
 		self.date_qde.setGeometry(275, 210, 120, 40)
 		self.submit_qpb.setGeometry(0, 294.5, 504, 30)
@@ -137,3 +140,7 @@ class InputWindow(QMdiSubWindow):
 	def log_input(self, input_type, data):
 		self.set_error("")
 		self.update()
+
+	def set_units(self, unit):
+		self.unit_lbl.setText(unit)
+		self.adjustSize()

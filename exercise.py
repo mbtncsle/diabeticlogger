@@ -9,6 +9,8 @@ class Exercise(InputWindow):
 	def __init__(self, parent):
 		super(Exercise, self).__init__(parent, "Please enter the number of steps")
 
+		super(Exercise, self).set_units("steps")
+
 		self.show()
 
 	# Function for submitting data

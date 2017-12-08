@@ -72,11 +72,12 @@ class AllGraph(QDialog):
 		if self.BG_check.isChecked():
 			for log in blood_glucose_crud.blood_glucose_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
-				if not (d in x_axis["BG"]):
-					x_axis["BG"].append(d)
-					y_axis["BG"].append([log.reading])
-				else:
-					y_axis["BG"][x_axis["BG"].index(d)].append(log.reading)
+				if d >= 0:
+					if not (d in x_axis["BG"]):
+						x_axis["BG"].append(d)
+						y_axis["BG"].append([log.reading])
+					else:
+						y_axis["BG"][x_axis["BG"].index(d)].append(log.reading)
 			for i in range(0, len(y_axis["BG"])):
 				total = 0
 				for y in y_axis["BG"][i]:
@@ -87,32 +88,35 @@ class AllGraph(QDialog):
 		if self.sleep_check.isChecked():
 			for log in sleep_crud.sleep_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
-				if not (d in x_axis["sleep"]):
-					x_axis["sleep"].append(d)
-					y_axis["sleep"].append(log.reading)
-				else:
-					y_axis["sleep"][x_axis["sleep"].index(d)] += log.reading
+				if d >= 0:
+					if not (d in x_axis["sleep"]):
+						x_axis["sleep"].append(d)
+						y_axis["sleep"].append(log.reading)
+					else:
+						y_axis["sleep"][x_axis["sleep"].index(d)] += log.reading
 
 		if self.step_check.isChecked():
 			for log in steps_crud.steps_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
-				if not (d in x_axis["steps"]):
-					x_axis["steps"].append(d)
-					y_axis["steps"].append(log.reading)
-				else:
-					y_axis["steps"][x_axis["steps"].index(d)] += log.reading
+				if d >= 0:
+					if not (d in x_axis["steps"]):
+						x_axis["steps"].append(d)
+						y_axis["steps"].append(log.reading)
+					else:
+						y_axis["steps"][x_axis["steps"].index(d)] += log.reading
 
 		if self.food_check.isChecked():
 			for log in meal_crud.meal_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
-				total = 0
-				for m in log.meal_items:
-					total += m.total_carbs
-				if not (d in x_axis["food"]):
-					x_axis["food"].append(d)
-					y_axis["food"].append(total)
-				else:
-					y_axis["food"][x_axis["food"].index(d)] += total
+				if d >= 0:
+					total = 0
+					for m in log.meal_items:
+						total += m.total_carbs
+					if not (d in x_axis["food"]):
+						x_axis["food"].append(d)
+						y_axis["food"].append(total)
+					else:
+						y_axis["food"][x_axis["food"].index(d)] += total
 
 		for key in y_axis:
 			y_axis[key] = self.get_percentage(y_axis[key])
@@ -137,6 +141,7 @@ class PlotCanvas(FigureCanvas):
 		for k in y_axis:
 			if len(y_axis[k]) > 0:
 				self.axes.plot(x_axis[k], y_axis[k], colors[k], label = labels[k])
+		self.axes.invert_xaxis()
 		self.axes.legend()
 		self.axes.set_ylabel(ylabel)
 		self.axes.set_xlabel(xlabel)

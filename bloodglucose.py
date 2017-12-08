@@ -25,6 +25,8 @@ class Glucose(InputWindow):
 		self.lbl.setGeometry(308, 30, 25, 25)
 		self.lbl.adjustSize()
 
+		super(Glucose, self).set_units("mg/dL")
+
 		self.show()
 
 	# Function for submitting data

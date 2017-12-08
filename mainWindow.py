@@ -120,6 +120,7 @@ class MainWindow(QMainWindow):
 		self.previous_days = 30
 
 		self.setGeometry(100, 30, self.window_width, self.window_height)
+		self.graph_qpb.click()
 		self.update_data()
 		self.show()
 

@@ -9,6 +9,8 @@ class Sleep(InputWindow):
 	def __init__(self, parent):
 		super(Sleep, self).__init__(parent, "Please enter the hours of sleep")
 
+		super(Sleep, self).set_units("hours")
+
 		self.show()
 
 	# Function for submitting data
