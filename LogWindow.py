@@ -10,6 +10,8 @@ class LogWindow(QMdiSubWindow):
 	def __init__(self, parent):
 		super(LogWindow, self).__init__(parent = None)
 
+		self.move(0, 0)
+
 		self.parent = parent
 
 		# Prepare the window

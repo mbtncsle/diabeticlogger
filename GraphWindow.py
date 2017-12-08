@@ -13,6 +13,8 @@ class GraphWindow(QMdiSubWindow):
 	def __init__(self):
 		super(GraphWindow, self).__init__(parent = None)
 
+		self.move(0, 0)
+
 		# Prepare the window
 		self.setWindowFlags(Qt.FramelessWindowHint)
 

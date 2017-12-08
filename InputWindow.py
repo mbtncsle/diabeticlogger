@@ -1,6 +1,13 @@
-from PyQt5.QtWidgets import QMdiSubWindow, QPushButton, QDialog, QLabel, QLineEdit, QDateEdit, QTimeEdit
-from PyQt5.QtCore import Qt, pyqtSlot, QTime
+from PyQt5.QtWidgets import QMdiSubWindow, QDialog, QLabel, QDateEdit, QTimeEdit, QVBoxLayout, QHBoxLayout, QWidget
+from PyQt5.QtCore import Qt, QTime
+
+
 from datetime import datetime
+
+
+from EntryWindow import EntryWindow
+
+
 import sys
 
 class InputWindow(QMdiSubWindow):
@@ -12,116 +19,80 @@ class InputWindow(QMdiSubWindow):
 		
 		# Prepare the window
 		self.setWindowFlags(Qt.FramelessWindowHint)
-
-		# Setup constants
-		self.blood_glucose = 1
-		self.sleep = 2
-		self.exercise = 3
-		self.food_list = 4
-
 		self.setFocusPolicy(Qt.NoFocus)
+		self.move(0, 0)
 
-		# Create the labels, setting their text, and their locations
-		self.main_lbl = QLabel(self)
-		self.main_lbl.setText(main_text)
-		self.main_lbl.adjustSize()
+		'''
+		----------------------------------------------------------------------------------------------------------------------------------------------------------
+		CREATION SECTION
+		----------------------------------------------------------------------------------------------------------------------------------------------------------
+		'''
 
+		# Create the error label
 		self.error_lbl = QLabel(self)
-		#self.error_lbl.setText("Incorrect input")
 
-		self.date_lbl = QLabel(self)
-		self.date_lbl.setText("Please pick a date")
-		self.date_lbl.adjustSize()
-		
-		self.time_lbl = QLabel(self)
-		self.time_lbl.setText("Please pick a time")
-		self.time_lbl.adjustSize()
+		# Create the entry window
+		self.entry = EntryWindow(main_text, self)
 
-		self.unit_lbl = QLabel(self)
-
-		# Create the editing box
-		self.main_qle = QLineEdit(self)
-
-		# Create the date box
+		# Create the date and time boxes
 		self.date_qde = QDateEdit(self)
+		self.time_qte = QTimeEdit(self)
 
-		# Create the submit button
-		self.submit_qpb = QPushButton(self)
-		self.submit_qpb.setText("Submit")
+		# Create the layouts
+		self.main_layout = QHBoxLayout()
+		self.columns = [QVBoxLayout(), QVBoxLayout()]
 
-		# Create the numpad buttons
-		self.backspace_qpb = QPushButton(self)
-		self.num_buttons = dict()
-		self.backspace_qpb.setText("Del")
-		self.backspace_qpb.clicked.connect(self.delete)
-		for i in range(0, 10):
-			self.num_buttons["numpad" + str(i)] = QPushButton(self)
-			self.num_buttons["numpad" + str(i)].setText(str(i))
-			self.num_buttons['numpad' + str(i)].setGeometry(40, 40, 40, 40)
-			self.num_buttons['numpad' + str(i)].clicked.connect(self.numbs)
+		# Create the main widget
+		self.main_widget = QWidget()
 
-		self.num_buttons['numpad' + str(1)].move(100, 90)
-		self.num_buttons['numpad' + str(2)].move(140, 90)
-		self.num_buttons['numpad' + str(3)].move(180, 90)
-		self.num_buttons['numpad' + str(4)].move(100, 130)
-		self.num_buttons['numpad' + str(5)].move(140, 130)
-		self.num_buttons['numpad' + str(6)].move(180, 130)
-		self.num_buttons['numpad' + str(7)].move(100, 170)
-		self.num_buttons['numpad' + str(8)].move(140, 170)
-		self.num_buttons['numpad' + str(9)].move(180, 170)
-		self.num_buttons['numpad' + str(0)].setGeometry(40, 40, 80, 40)
-		self.num_buttons['numpad' + str(0)].move(100, 210)
+		'''
+		----------------------------------------------------------------------------------------------------------------------------------------------------------
+		SETUP SECTION
+		----------------------------------------------------------------------------------------------------------------------------------------------------------
+		'''
 
-
-
-		# what happens when they press enter with the textbox selected
-		self.main_qle.returnPressed.connect(self.submit)
-
-		# The date of the date input, whether it has a calendar popup arrow and what date it is initialized to
+		# Setup the date and time
 		self.date_qde.setDisplayFormat("MM/dd/yyyy")
 		self.date_qde.setCalendarPopup(True)
 		self.date_qde.setDate(datetime.now())
 
-		# What happens when the submit button is clicked
-		self.submit_qpb.clicked.connect(self.submit)
+		self.time_qte.setDisplayFormat("hh:mm")
+		self.time_qte.setTime(QTime())
 
-		self.time = QTimeEdit(self)
-		self.time.setDisplayFormat("hh:mm")
-		self.time.setTime(QTime())
-		#self.time.adjustSize()
+		# Add the entry window to the first column
+		self.columns[0].addWidget(self.entry)
+		self.columns[0].addStretch(2)
 
-		self.error_lbl = QLabel(self)
+		# Setup the second column
+		self.columns[1].addWidget(self.error_lbl)
+		self.columns[1].addWidget(self.time_qte)
+		self.columns[1].addWidget(self.date_qde)
+		self.columns[1].addStretch(2)
 
-		self.main_lbl.move(100, 30)
-		self.date_lbl.move(290, 195)
-		self.time_lbl.move(293, 115)
-		self.unit_lbl.move(225, 45)
-		self.main_qle.setGeometry(100, 45, 120, 40)
-		self.date_qde.setGeometry(275, 210, 120, 40)
-		self.submit_qpb.setGeometry(0, 294.5, 504, 30)
-		self.backspace_qpb.setGeometry(180, 210, 40, 40)
-		self.time.setGeometry(275, 130, 120, 40)
-		self.error_lbl.move(255, 85)
+		# Make the main layout
+		for i in range(0, len(self.columns)):
+			self.main_layout.addLayout(self.columns[i])
+			if i < len(self.columns) - 1:
+				self.main_layout.addStretch(1)
 
-		self.setFixedSize(509, 300)
+		# Setup the main widget
+		self.main_widget.setLayout(self.main_layout)
+		self.setWidget(self.main_widget)
 
+	'''
+	--------------------------------------------------------------------------------------------------------------------------------------------------------------
+	METHOD SECTION
+	--------------------------------------------------------------------------------------------------------------------------------------------------------------
+	'''
+
+	# Display an error
 	def set_error(self, text):
 		self.error_lbl.setText(text)
 		self.error_lbl.adjustSize()
 
-	@pyqtSlot()
-	def numbs(self):
-		self.main_qle.setText(self.main_qle.text() + str(self.sender().text()))
-
-	# Function for deleting the last number
-	def delete(self):
-		string = self.main_qle.text()
-		if len(string) > 0:
-			self.main_qle.setText(string[:-1])
-
 	# Return all inputs necessary for logging inputs
 	def get_inputs(self):
-		return [self.main_qle.text(), self.date_qde.date(), self.time.time()]
+		return [self.entry.get_input(), self.date_qde.date(), self.time.time()]
 
 	# Call parent update
 	def update(self):
@@ -130,10 +101,8 @@ class InputWindow(QMdiSubWindow):
 	# Create a notification window for submission
 	def submit_notify(self):
 		note = QDialog()
-		note_lbl = QLabel(note)
+		note_lbl = QLabel("Data Submitted", note)
 		note_button = QPushButton("Okay", note)
-		note_lbl.setText("Data Submitted")
-		note_lbl.adjustSize()
 		note_button.move(0, 25)
 		note_button.clicked.connect(note.accept)
 		note.exec_()
@@ -143,6 +112,6 @@ class InputWindow(QMdiSubWindow):
 		self.set_error("")
 		self.update()
 
+	# Set the units for the window
 	def set_units(self, unit):
-		self.unit_lbl.setText(unit)
-		self.adjustSize()
+		self.entry.set_unit(unit)

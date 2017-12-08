@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
 		self.setWindowTitle("Diabetic Logger")
 
 		# Keep the window at this fixed size
-		self.setFixedSize(509, 746)
+		#self.setFixedSize(509, 746)
 
 		# NEW setup stylesheet
 		app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
@@ -123,11 +123,14 @@ class MainWindow(QMainWindow):
 		self.date_layout.addStretch(1)
 		self.data_layout.addStretch(1)
 		for date in self.date_buttons:
+			date.setFixedSize(100, 30)
 			self.date_layout.addWidget(date)
 		for data in self.data_buttons:
+			data.setFixedSize(100, 30)
 			self.data_layout.addWidget(data)
 		self.date_layout.addStretch(1)
 		self.data_layout.addStretch(1)
+
 
 		# Add everything to the main layout
 		self.main_layout.addWidget(self.input_mdi)

@@ -14,6 +14,8 @@ class RecommendationsWindow(QMdiSubWindow):
 	def __init__(self, parent):
 		super(RecommendationsWindow, self).__init__(parent = None)
 
+		self.move(0, 0)
+
 		self.parent = parent
 
 		# Prepare the window
