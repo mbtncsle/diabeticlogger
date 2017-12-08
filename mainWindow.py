@@ -121,10 +121,12 @@ class MainWindow(QMainWindow):
 
 		# Add the date and data buttons to their layouts
 		self.date_layout.addStretch(1)
+		self.data_layout.addStretch(1)
 		for date in self.date_buttons:
 			self.date_layout.addWidget(date)
 		for data in self.data_buttons:
 			self.data_layout.addWidget(data)
+		self.date_layout.addStretch(1)
 		self.data_layout.addStretch(1)
 
 		# Add everything to the main layout

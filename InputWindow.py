@@ -103,6 +103,8 @@ class InputWindow(QMdiSubWindow):
 		self.time.setGeometry(275, 130, 120, 40)
 		self.error_lbl.move(255, 85)
 
+		self.setFixedSize(509, 300)
+
 	def set_error(self, text):
 		self.error_lbl.setText(text)
 		self.error_lbl.adjustSize()
