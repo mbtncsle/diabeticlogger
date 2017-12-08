@@ -1,5 +1,9 @@
 from PyQt5.QtWidgets import QLabel, QComboBox
+from datetime import datetime
 from InputWindow import InputWindow
+import sys
+sys.path.insert(0, "./database_files")
+import blood_glucose_crud
 
 class Glucose(InputWindow):
 
@@ -21,12 +25,24 @@ class Glucose(InputWindow):
 		self.lbl.setGeometry(308, 30, 25, 25)
 		self.lbl.adjustSize()
 
+		super(Glucose, self).set_units("mg/dL")
+
 		self.show()
+
+	def get_name(self):
+		return "Blood Glucose"
 
 	# Function for submitting data
 	def submit(self):
+		inputs = super(Glucose, self).get_inputs()
 		try:
-			super(Glucose, self).log_input(1, [self.combo.currentText()])
+			int(inputs[0])
+			inputs[1].toString("yyyy-MM-dd")
+			inputs[2].toString("hh:mm")
 		except Exception as e:
-			super().error_lbl.setText("Invalid Input")
-			super().error_lbl.adjustSize()
+			super(Glucose, self).set_error("Invalid Input")
+			return
+		dt = datetime.strptime(inputs[1].toString("yyyy-MM-dd") + " " + inputs[2].toString("hh:mm") + ":00", "%Y-%m-%d %H:%M:%S")
+		blood_glucose_crud.blood_glucose_insert(blood_glucose_crud.BloodGlucoseRecord(meal = self.combo.currentText(), reading = int(inputs[0]), record_date = dt))
+		super(Glucose, self).update()
+		super(Glucose, self).submit_notify()

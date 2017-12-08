@@ -17,6 +17,7 @@ class GraphWindow(QMdiSubWindow):
 		self.setWindowFlags(Qt.FramelessWindowHint)
 
 		# Setup constants
+		self.types = ["Blood Glucose Level", "Hours of Sleep", "Steps Walked", "Carbs Ate"]
 		self.blood_glucose = 1
 		self.sleep = 2
 		self.exercise = 3
@@ -26,30 +27,30 @@ class GraphWindow(QMdiSubWindow):
 		self.graph = PlotCanvas(self)
 		self.graph.setGeometry(0, 0, 550, 320)
 
-		self.update()
-
 		self.show()
+
+	def get_name(self):
+		return "Graph"
 
 	# Change which data is graphed
 	def change_data(self, data):
 		self.data = data
-		self.update()
 
 	# Get data and graph it
-	def update(self, begin = datetime.now() - timedelta(days = 30), end = datetime.now()):
-		days = 10
+	def update(self, previous_days):
 		x_axis = []
 		y_axis = []
 		xl = "Days Passed"
 		if self.data == self.blood_glucose:
 			yl = "Blood Glucose"
-			for log in blood_glucose_crud.blood_glucose_select_by_days(days):
+			for log in blood_glucose_crud.blood_glucose_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
-				if not (d in x_axis):
-					x_axis.append(d)
-					y_axis.append([log.reading])
-				else:
-					y_axis[x_axis.index(d)].append(log.reading)
+				if d >= 0:
+					if not (d in x_axis):
+						x_axis.append(d)
+						y_axis.append([log.reading])
+					else:
+						y_axis[x_axis.index(d)].append(log.reading)
 			for i in range(0, len(y_axis)):
 				total = 0
 				for y in y_axis[i]:
@@ -59,35 +60,38 @@ class GraphWindow(QMdiSubWindow):
 			x_axis, y_axis = self.update_sort(x_axis, y_axis)
 		elif self.data == self.sleep:
 			yl = "Hours Slept"
-			for log in sleep_crud.sleep_select_by_days(days):
+			for log in sleep_crud.sleep_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
-				if not (d in x_axis):
-					x_axis.append(d)
-					y_axis.append(log.reading)
-				else:
-					y_axis[x_axis.index(d)] += log.reading
+				if d >= 0:
+					if not (d in x_axis):
+						x_axis.append(d)
+						y_axis.append(log.reading)
+					else:
+						y_axis[x_axis.index(d)] += log.reading
 		elif self.data == self.exercise:
 			yl = "Steps Walked"
-			for log in steps_crud.steps_select_by_days(days):
+			for log in steps_crud.steps_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
-				if not (d in x_axis):
-					x_axis.append(d)
-					y_axis.append(log.reading)
-				else:
-					y_axis[x_axis.index(d)] += log.reading
+				if d >= 0:
+					if not (d in x_axis):
+						x_axis.append(d)
+						y_axis.append(log.reading)
+					else:
+						y_axis[x_axis.index(d)] += log.reading
 		else:
 			yl = "Carbs ate"
-			for log in meal_crud.meal_select_by_days(days):
+			for log in meal_crud.meal_select_by_days(previous_days):
 				d = (datetime.now() - log.record_date).days
-				total = 0
-				for m in log.meal_items:
-					total += m.total_carbs
-				if not (d in x_axis):
-					x_axis.append(d)
-					y_axis.append(total)
-				else:
-					y_axis[x_axis.index(d)] += total
-		self.graph.plot([x_axis, y_axis], yl, xl)
+				if d >= 0:
+					total = 0
+					for m in log.meal_items:
+						total += m.total_carbs
+					if not (d in x_axis):
+						x_axis.append(d)
+						y_axis.append(total)
+					else:
+						y_axis[x_axis.index(d)] += total
+		self.graph.plot([x_axis, y_axis], yl, xl, self.types[self.data - 1])
 
 	def update_sort(self, m, two):
 		if len(m) <= 1:
@@ -131,10 +135,12 @@ class PlotCanvas(FigureCanvas):
 		self.setParent(parent)
  
 
-	def plot(self, nums, ylabel, xlabel):
+	def plot(self, nums, ylabel, xlabel, title):
 		data = nums
 		self.axes.clear()
 		self.axes.plot(data[0], data[1], 'r-')
+		self.axes.invert_xaxis()
 		self.axes.set_ylabel(ylabel)
 		self.axes.set_xlabel(xlabel)
+		self.axes.set_title(title)
 		self.draw()

@@ -29,14 +29,14 @@ class LogWindow(QMdiSubWindow):
 		self.scrollarea.setWidget(self.frame)
 		self.scrollarea.setGeometry(0, 0, 505, 325)
 
-		self.update()
-
 		self.show()
+
+	def get_name(self):
+		return "Data Sheet"
 
 	# Change which data logs are shown
 	def change_data(self, data):
 		self.data = data
-		self.update()
 
 	# Delete a log
 	@pyqtSlot()
@@ -51,17 +51,28 @@ class LogWindow(QMdiSubWindow):
 			steps_crud.steps_delete(self.sender().extra)
 		self.parent.update_data()
 
-	# Get logs and show them
-	def update(self, begin = datetime.now() - timedelta(days = 30), end = datetime.now()):
+	# Clear frames layout
+	def clear_layout(self, layout):
+		if layout is not None:
+			while layout.count():
+				item = layout.takeAt(0)
+				widget = item.widget()
+				if widget is not None:
+					widget.deleteLater()
+				else:
+					self.clear_layout(item.layout())
+		# for i in reversed(range(self.frame.layout().count())): 
+		# 	if self.frame.layout().itemAt(i).widget() != None:
+		# 		self.frame.layout().itemAt(i).widget().setParent(None)
+		# 	else:
+		# 		self.frame.layout().itemAt(i).setParent(None)
 
-		for i in reversed(range(self.frame.layout().count())): 
-			if self.frame.layout().itemAt(i).widget() != None:
-				self.frame.layout().itemAt(i).widget().setParent(None)
-			else:
-				self.frame.layout().itemAt(i).setParent(None)
+	# Get logs and show them
+	def update(self, previous_days):
+		self.clear_layout(self.frame.layout())
 
 		if self.data == self.blood_glucose:
-			for log in blood_glucose_crud.blood_glucose_select_by_days(30):
+			for log in blood_glucose_crud.blood_glucose_select_by_days(previous_days):
 				self.frame.layout().addWidget(QLabel(log.meal + " blood glucose level was " + str(log.reading) + " on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
 				but = QPushButton()
 				but.setText("Delete")
@@ -73,7 +84,7 @@ class LogWindow(QMdiSubWindow):
 				hbox.addStretch(1)
 				self.frame.layout().addLayout(hbox)
 		elif self.data == self.food_list:
-			for log in meal_crud.meal_select_by_days(30):
+			for log in meal_crud.meal_select_by_days(previous_days):
 				st = ""
 				total_carbs = 0
 				for m in log.meal_items:
@@ -91,7 +102,7 @@ class LogWindow(QMdiSubWindow):
 				hbox.addStretch(1)
 				self.frame.layout().addLayout(hbox)
 		elif self.data == self.sleep:
-			for log in sleep_crud.sleep_select_by_days(30):
+			for log in sleep_crud.sleep_select_by_days(previous_days):
 				self.frame.layout().addWidget(QLabel(str(log.reading) + " hours of sleep on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
 				but = QPushButton()
 				but.setText("Delete")
@@ -103,7 +114,7 @@ class LogWindow(QMdiSubWindow):
 				hbox.addStretch(1)
 				self.frame.layout().addLayout(hbox)
 		else:
-			for log in steps_crud.steps_select_by_days(30):
+			for log in steps_crud.steps_select_by_days(previous_days):
 				self.frame.layout().addWidget(QLabel(str(log.reading) + " steps walked on " + log.record_date.strftime("%Y-%m-%d %H:%M:%S")))
 				but = QPushButton()
 				but.setText("Delete")

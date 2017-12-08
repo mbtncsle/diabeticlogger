@@ -1,5 +1,9 @@
 from PyQt5.QtWidgets import QLabel, QComboBox
+from datetime import datetime
 from InputWindow import InputWindow
+import sys
+sys.path.insert(0, "./database_files")
+import meal_crud, meal_item_crud
 
 class Foodlist(InputWindow):
 
@@ -16,7 +20,8 @@ class Foodlist(InputWindow):
 		self.combo.addItem("Milk - 12g", 12)
 		self.combo.addItem("Stir Fry - 7g", 7)
 
-		self.combo.activated.connect(self.handleActivated)
+		# Unnescesary
+		# self.combo.activated.connect(self.handleActivated)
 
 		self.lbl_meal = QLabel("Meal List", self)
 
@@ -33,28 +38,48 @@ class Foodlist(InputWindow):
 		self.lbl_meal.adjustSize()
 		self.lbl.adjustSize()
 
+		super(Foodlist, self).set_units("servings")
+
 		self.show()
 
-	def handleActivated(self, index):
-		try:		
-			carbValue = self.combo.itemData(index)
-			totalCarbs = carbValue * int(super().serving_qle.text())
-			super().error_lbl.setText("")
-		except Exception as e:
-			super().error_lbl.setText("Wrong input on the serving size")
-			super().error_lbl.adjustSize()
+	def get_name(self):
+		return "Food Intake"
 
-		#calculates number of carbs times the serving size
+	# def handleActivated(self, index):
+	# 	try:		
+	# 		carbValue = self.combo.itemData(index)
+	# 		totalCarbs = carbValue * int(super(Foodlist, self).main_qle.text())
+	# 	except Exception as e:
+	# 		super(Foodlist, self).set_error("Wrong input on the serving size")
+
+	# 	#calculates number of carbs times the serving size
 
 
-		#Obtained the string name of the food and number of carbs
-		#self.combo.itemText(index)
+	# 	#Obtained the string name of the food and number of carbs
+	# 	#self.combo.itemText(index)
 
 	# Function for submitting data
 	def submit(self):
+
+		inputs = super(Foodlist, self).get_inputs()
 		try:
+			int(inputs[0])
+			inputs[1].toString("yyyy-MM-dd")
+			inputs[2].toString("hh:mm")
 			int(self.combo.itemData(self.combo.currentIndex()))
-			super().log_input(4, [self.combo.itemData(self.combo.currentIndex()), self.combo.currentText().split("-")[0][:-1]])
 		except Exception as e:
-			self.error_lbl.setText("Invalid Input")
-			self.error_lbl.adjustSize()
+			super(Foodlist, self).set_error("Invalid Input")
+			return
+		dt = datetime.strptime(inputs[1].toString("yyyy-MM-dd") + " " + inputs[2].toString("hh:mm") + ":00", "%Y-%m-%d %H:%M:%S")
+
+		id = None
+		for m in meal_crud.meal_select_by_days((datetime.now() - dt).days + 1):
+			if m.record_date == dt:
+				id = m.meal_id
+				break
+		if id == None:
+			id = meal_crud.meal_insert(meal_crud.MealRecord(meal = self.combo_meal.itemData(self.combo_meal.currentIndex()), reading = int(inputs[0]) * int(self.combo.itemData(self.combo.currentIndex())), record_date = dt))
+		meal_item_crud.meal_item_insert(meal_item_crud.MealItemRecord(meal_id = id, description = self.combo.currentText().split("-")[0][:-1], portions = int(inputs[0]), carbs_per_portion = int(self.combo.itemData(self.combo.currentIndex())), total_carbs = int(inputs[0]) * int(self.combo.itemData(self.combo.currentIndex()))))
+
+		super(Foodlist, self).update()
+		super(Foodlist, self).submit_notify()
