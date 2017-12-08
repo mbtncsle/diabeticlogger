@@ -11,7 +11,7 @@ class Db:
     #
     def __init__(self):
 
-        server_name = "Mikes-laptop\SQLExpress01"
+        server_name = ".\SQLExpress"
         db_name = "DiabeticLogger"
 
         connection_string = "DRIVER={SQL Server Native Client 11.0};"
