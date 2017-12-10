@@ -1,12 +1,4 @@
-from PyQt5.QtWidgets import QMdiSubWindow
-from PyQt5.QtCore import Qt
-import sys
-from datetime import datetime, timedelta
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
-sys.path.insert(0, "./database_files")
-import blood_glucose_crud, meal_crud, meal_item_crud, sleep_crud, steps_crud
+from module_references import *
 
 class GraphWindow(QMdiSubWindow):
 

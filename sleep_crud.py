@@ -1,37 +1,35 @@
-import pyodbc
-import datetime
-from database_files import db
+from module_references import *
 
-table_name = "Steps"
+table_name = "Sleep"
 
 
-class StepsRecord:
+class SleepRecord:
     """
-    Steps record class with constructor
+    Sleep record class with constructor
     """
-    def __init__(self, steps_id=-1, reading=0, record_date=datetime.datetime.now(), notes=""):
-        self.steps_id = steps_id
+    def __init__(self, sleep_id=-1, reading=0, record_date=datetime.now(), notes=""):
+        self.sleep_id = sleep_id
         self.reading = reading
         self.record_date = record_date
         self.notes = notes
 
 
 # ==============================================================================
-# Steps record operations
+# Sleep record operations
 # ==============================================================================
-def steps_insert(steps_record):
+def sleep_insert(sleep_record):
     """
-    Inserts a step record
-    :param steps_record: StepsRecord instance
-    :return: StepsId of inserted record
+    Inserts a sleep record
+    :param sleep_record: SleepRecord instance
+    :return: SleepId of inserted record
     """
 
     sql_statement = "INSERT INTO " + table_name + " (Reading, RecordDate, Notes) OUTPUT INSERTED."
     sql_statement += table_name + "Id"
     sql_statement += " VALUES ("
-    sql_statement += str(steps_record.reading) + ", "
-    sql_statement += "'" + steps_record.record_date.strftime("%Y-%m-%d %H:%M:%S") + "', "
-    sql_statement += "'" + str(steps_record.notes) + "'"
+    sql_statement += str(sleep_record.reading) + ", "
+    sql_statement += "'" + sleep_record.record_date.strftime("%Y-%m-%d %H:%M:%S") + "', "
+    sql_statement += "'" + str(sleep_record.notes) + "'"
     sql_statement += ");"
 
     with db.Db() as cursor:
@@ -39,22 +37,21 @@ def steps_insert(steps_record):
             cursor.execute(sql_statement)
         except pyodbc.Error as ex:
             print(ex.args)
-            return sql_statement
+            return None
 
         return_id = cursor.fetchone()[0]
         return return_id
 
 
-def steps_select_by_id(steps_id):
+def sleep_select_by_id(sleep_id):
     """
-    Returns a steps record based on StepsId
-    :param steps_id: StepsId of record
-    :return: StepsRecord instance
+    Returns a sleep record based on SleepId
+    :param sleep_id: SleepId of record
+    :return: SleepRecord instance
     """
 
-    sql_statement = "SELECT " + table_name + "Id, Reading, RecordDate, Notes " + \
-                    "FROM " + table_name + " WHERE " + table_name + "Id = " + \
-                    str(steps_id) + ";"
+    sql_statement = "SELECT " + table_name + "Id, Reading, RecordDate, Notes FROM " +\
+                    table_name + " WHERE " + table_name + "Id = " + str(sleep_id) + ";"
 
     with db.Db() as cursor:
         try:
@@ -66,8 +63,8 @@ def steps_select_by_id(steps_id):
         row = cursor.fetchone()
 
         if row:
-            return StepsRecord(
-                steps_id=row.StepsId,
+            return SleepRecord(
+                sleep_id=row.SleepId,
                 reading=row.Reading,
                 record_date=row.RecordDate,
                 notes=row.Notes
@@ -76,13 +73,13 @@ def steps_select_by_id(steps_id):
             return None
 
 
-def steps_select_by_days(days):
+def sleep_select_by_days(days):
     """
     Returns a list of records from the previous number of days specified
     :param days: days in the past to include
-    :return: List of StepsRecords
+    :return: List of SleepRecords
     """
-    oldest_date = datetime.datetime.today() - datetime.timedelta(days=days)
+    oldest_date = datetime.today() - timedelta(days=days)
 
     sql_statement = "SELECT " + table_name + "Id, Reading, RecordDate, Notes" + \
                     " FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate DESC ;".format(
@@ -95,13 +92,13 @@ def steps_select_by_days(days):
             print(ex.args)
             return None
 
-        return_steps_records = []
+        return_sleep_records = []
         row = cursor.fetchone()
 
         while row:
-            return_steps_records.append(
-                StepsRecord(
-                    steps_id=row.StepsId,
+            return_sleep_records.append(
+                SleepRecord(
+                    sleep_id=row.SleepId,
                     reading=row.Reading,
                     record_date=row.RecordDate,
                     notes=row.Notes
@@ -109,7 +106,7 @@ def steps_select_by_days(days):
             )
             row = cursor.fetchone()
 
-    return return_steps_records
+    return return_sleep_records
 
 
 def select_by_date(start_date, include_days):
@@ -117,14 +114,17 @@ def select_by_date(start_date, include_days):
     Returns a list of records from the date specified backwards in time for the number of days specified
     :param start_date: Date to start from and go back in time
     :param include_days: days in the past to include
-    :return: List of StepsRecords
+    :return: List of SleepRecords
+    :return: List of SleepRecords
     """
-    oldest_date = start_date - datetime.timedelta(days=include_days)
+    oldest_date = start_date - timedelta(days=include_days)
 
     sql_statement = "SELECT " + table_name + "Id, Reading, RecordDate, Notes " + \
-                    "FROM " + table_name + " WHERE RecordDate >= '" + oldest_date.strftime("%Y-%m-%d 00:00:00' ") + \
-                    "AND RecordDate <= '" + start_date.strftime("%Y-%m-%d 23:59:59' ") + \
+                    "FROM " + table_name + " WHERE RecordDate >= '" + oldest_date.strftime("%Y-%m-%d 00:00:00' ") +\
+                    "AND RecordDate <= '" + start_date.strftime("%Y-%m-%d 23:59:59' ") +\
                     "ORDER BY RecordDate DESC;"
+
+    print(sql_statement)
 
     with db.Db() as cursor:
         try:
@@ -133,13 +133,13 @@ def select_by_date(start_date, include_days):
             print(ex.args)
             return None
 
-        return_steps_records = []
+        return_sleep_records = []
         row = cursor.fetchone()
 
         while row:
-            return_steps_records.append(
-                StepsRecord(
-                    steps_id=row.StepsId,
+            return_sleep_records.append(
+                SleepRecord(
+                    sleep_id=row.SleepId,
                     reading=row.Reading,
                     record_date=row.RecordDate,
                     notes=row.Notes
@@ -147,17 +147,17 @@ def select_by_date(start_date, include_days):
             )
             row = cursor.fetchone()
 
-    return return_steps_records
+    return return_sleep_records
 
 
-def steps_delete(steps_id):
+def sleep_delete(sleep_id):
     """
-    Deletes a steps record based on StepsId
-    :param steps_id: StepsId of record
+    Deletes a sleep record based on SleepId
+    :param sleep_id: SleepId of record
     :return: row count is returned
     """
 
-    sql_statement = "DELETE FROM " + table_name + " WHERE " + table_name + "Id = " + str(steps_id) + ";"
+    sql_statement = "DELETE FROM " + table_name + " WHERE " + table_name + "Id = " + str(sleep_id) + ";"
 
     with db.Db() as cursor:
         try:

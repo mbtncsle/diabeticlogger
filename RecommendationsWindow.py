@@ -1,12 +1,4 @@
-from PyQt5.QtWidgets import QMdiSubWindow, QLabel, QScrollArea,QFrame,QVBoxLayout
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QMdiSubWindow, QVBoxLayout, QScrollArea, QLabel, QFrame, QPushButton, QHBoxLayout
-from PyQt5.QtCore import Qt, pyqtSlot
-from datetime import datetime, timedelta
-import sys
-sys.path.insert(0, "./database_files")
-import db
-import pyodbc
+from module_references import *
 
 
 class RecommendationsWindow(QMdiSubWindow):

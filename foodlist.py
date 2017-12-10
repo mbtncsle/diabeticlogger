@@ -1,9 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QComboBox
-from datetime import datetime
-from InputWindow import InputWindow
-import sys
-sys.path.insert(0, "./database_files")
-import meal_crud, meal_item_crud
+from module_references import *
 
 class Foodlist(InputWindow):
 
@@ -76,7 +71,7 @@ class Foodlist(InputWindow):
 				break
 		if id == None:
 			id = meal_crud.meal_insert(meal_crud.MealRecord(meal = self.combo_meal.itemData(self.combo_meal.currentIndex()), reading = int(inputs[0]) * int(self.combo.itemData(self.combo.currentIndex())), record_date = dt))
-		meal_item_crud.meal_item_insert(meal_item_crud.MealItemRecord(meal_id = id, description = self.combo.currentText().split("-")[0][:-1], portions = int(inputs[0]), carbs_per_portion = int(self.combo.itemData(self.combo.currentIndex())), total_carbs = int(inputs[0]) * int(self.combo.itemData(self.combo.currentIndex()))))
+		meal_item_crud.meal_item_insert(MealItemRecord(meal_id = id, description = self.combo.currentText().split("-")[0][:-1], portions = int(inputs[0]), carbs_per_portion = int(self.combo.itemData(self.combo.currentIndex())), total_carbs = int(inputs[0]) * int(self.combo.itemData(self.combo.currentIndex()))))
 
 		super(Foodlist, self).update()
 		super(Foodlist, self).submit_notify()

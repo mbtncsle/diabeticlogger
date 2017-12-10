@@ -17,8 +17,8 @@ def test_insert():
 
     # The code below converts datetime stamps to Microsoft SQL Server specific values
     # and then convert it back for comparison to the retrieved value from Microsoft SQL Server
-    record_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    record_date = datetime.datetime.strptime(record_date, "%Y-%m-%d %H:%M:%S")
+    record_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    record_date = datetime.strptime(record_date, "%Y-%m-%d %H:%M:%S")
 
     notes = "test_insert unit test record at " + str(record_date)
 
@@ -58,9 +58,9 @@ def test_select_by_days():
     record_list = steps_crud.steps_select_by_days(days=days)
 
     # This is done to correctly format the date time for use with Microsoft SQL Server
-    oldest_date = datetime.datetime.today() - datetime.timedelta(days=days)
+    oldest_date = datetime.today() - timedelta(days=days)
     oldest_date = oldest_date.strftime("%Y-%m-%d 00:00:00")
-    oldest_date = datetime.datetime.strptime(oldest_date, "%Y-%m-%d %H:%M:%S")
+    oldest_date = datetime.strptime(oldest_date, "%Y-%m-%d %H:%M:%S")
 
     # Test that all the records returned have a record date that is greater
     # than the oldest date that should be in the record set
@@ -78,16 +78,16 @@ def test_select_by_days():
 def test_select_by_date():
 
     # Specific values
-    start_date = datetime.datetime.strptime('2017-11-25 23:59:59', '%Y-%m-%d %H:%M:%S')
+    start_date = datetime.strptime('2017-11-25 23:59:59', '%Y-%m-%d %H:%M:%S')
     include_days = 3
 
     # Retrieve the records
     record_list = steps_crud.select_by_date(start_date=start_date, include_days=include_days)
 
     # This is done to correctly format the date time for use with Microsoft SQL Server
-    oldest_date = start_date - datetime.timedelta(days=include_days)
+    oldest_date = start_date - timedelta(days=include_days)
     oldest_date = oldest_date.strftime("%Y-%m-%d 00:00:00")
-    oldest_date = datetime.datetime.strptime(oldest_date, "%Y-%m-%d %H:%M:%S")
+    oldest_date = datetime.strptime(oldest_date, "%Y-%m-%d %H:%M:%S")
     record_count = 0
 
     # Test that all the records returned have a record date that is greater
@@ -113,8 +113,8 @@ def test_delete():
 
     # The code below converts datetime stamps to Microsoft SQL Server specific values
     # and then convert it back for comparison to the retrieved value from Microsoft SQL Server
-    record_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    record_date = datetime.datetime.strptime(record_date, "%Y-%m-%d %H:%M:%S")
+    record_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    record_date = datetime.strptime(record_date, "%Y-%m-%d %H:%M:%S")
 
     notes = "test_delete unit test record at " + str(record_date)
 

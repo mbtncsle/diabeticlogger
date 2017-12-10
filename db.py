@@ -1,5 +1,4 @@
-import pyodbc
-
+from module_references import *
 
 class Db:
     """
@@ -11,14 +10,22 @@ class Db:
     #
     def __init__(self):
 
-        server_name = ".\SQLExpress"
-        db_name = "DiabeticLogger"
+        # server_name = ".\SQLExpress"
+        # db_name = "DiabeticLogger"
 
-        connection_string = "DRIVER={SQL Server Native Client 11.0};"
-        connection_string += "SERVER=" + server_name + ";"
-        connection_string += "DATABASE=" + db_name + ";"
-        connection_string += "UID=sa;"
-        connection_string += "PWD=Vampires6!"
+        # connection_string = "DRIVER={SQL Server Native Client 11.0};"
+        # connection_string += "SERVER=" + server_name + ";"
+        # connection_string += "DATABASE=" + db_name + ";"
+        # connection_string += "UID=sa;"
+        # connection_string += "PWD=Vampires6!"
+        driver = 'DRIVER={ODBC Driver 13 for SQL Server};'
+        server = 'SERVER=vampires.database.windows.net;'
+        port = 'PORT=1433;'
+        database = 'DATABASE=DiabeticLogger;'
+        username = 'UID=heroku;'
+        password = 'PWD=Vampires6!;'
+
+        connection_string = driver + server + port + database + username + password
 
         try:
             self.__connection = pyodbc.connect(connection_string, autocommit=True)

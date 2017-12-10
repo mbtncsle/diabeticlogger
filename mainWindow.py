@@ -1,20 +1,4 @@
-from PyQt5.QtWidgets import QPushButton, QMdiArea, QApplication, QMainWindow, QAction
-from PyQt5.QtCore import pyqtSlot
-import qdarkstyle
-from datetime import datetime
-import sys
-
-
-from exercise import Exercise
-from foodlist import Foodlist
-from sleep import Sleep
-from bloodglucose import Glucose
-
-
-from RecommendationsWindow import RecommendationsWindow
-from GraphWindow import GraphWindow
-from LogWindow import LogWindow
-from AllGraph import AllGraph
+from module_references import *
 
 class MainWindow(QMainWindow):
 

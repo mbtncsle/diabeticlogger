@@ -1,8 +1,4 @@
-from datetime import datetime
-from InputWindow import InputWindow
-import sys
-sys.path.insert(0, "./database_files")
-import sleep_crud
+from module_references import *
 
 class Sleep(InputWindow):
 

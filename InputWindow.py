@@ -1,8 +1,4 @@
-from PyQt5.QtWidgets import QMdiSubWindow, QPushButton, QDialog, QLabel, QLineEdit, QDateEdit, QTimeEdit
-from PyQt5.QtCore import Qt, pyqtSlot, QTime
-from datetime import datetime
-import sys
-
+from module_references import *
 class InputWindow(QMdiSubWindow):
 	
 	def __init__(self, parent, main_text):

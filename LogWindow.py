@@ -1,10 +1,4 @@
-from PyQt5.QtWidgets import QMdiSubWindow, QVBoxLayout, QScrollArea, QLabel, QFrame, QPushButton, QHBoxLayout
-from PyQt5.QtCore import Qt, pyqtSlot
-from datetime import datetime, timedelta
-import sys
-sys.path.insert(0, "./database_files")
-import blood_glucose_crud, meal_crud, meal_item_crud, sleep_crud, steps_crud
-
+from module_references import *
 class LogWindow(QMdiSubWindow):
 
 	def __init__(self, parent):

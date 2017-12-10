@@ -1,6 +1,4 @@
-import pyodbc
-from database_files import db
-
+from module_references import *
 table_name = "MealItem"
 
 

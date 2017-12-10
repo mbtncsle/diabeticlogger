@@ -1,12 +1,12 @@
 import datetime
 import random
 import pyodbc
-from database_files import db
-from database_files import blood_glucose_crud
-from database_files import sleep_crud
-from database_files import steps_crud
-from database_files import meal_crud
-from database_files import meal_item_crud
+import db
+import blood_glucose_crud
+import sleep_crud
+import steps_crud
+import meal_crud
+import meal_item_crud
 
 # Number of days to create records for
 days_of_records = 90
@@ -92,7 +92,7 @@ def populate_sleep_table():
         sleep_hours = random.randint(500, 900) / 100
         sleep_crud.sleep_insert(
             sleep_crud.SleepRecord(reading=sleep_hours,
-                                   record_date=datetime.datetime.today() - datetime.timedelta(days=day),
+                                   record_date=datetime.today() - timedelta(days=day),
                                    notes="Slept for " + str(sleep_hours) + " hours")
         )
 
@@ -124,7 +124,7 @@ def populate_steps_table():
         steps = random.randint(1000, 20000)
         steps_crud.steps_insert(
             steps_crud.StepsRecord(reading=steps,
-                                   record_date=datetime.datetime.today() - datetime.timedelta(days=day),
+                                   record_date=datetime.today() - timedelta(days=day),
                                    notes="Walked " + str(steps) + " steps")
         )
 
@@ -165,10 +165,10 @@ def populate_blood_glucose_table():
     for day in range(days_of_records):
         for meal in meals:
             blood_glucose = random.randint(50, 500)
-            record_date = (datetime.datetime.today() - datetime.timedelta(days=day)).strftime("%m-%d-%Y")
+            record_date = (datetime.today() - timedelta(days=day)).strftime("%m-%d-%Y")
             record_time = meal[1]
             record_date_time_string = record_date + " " + record_time
-            record_date_time = datetime.datetime.strptime(record_date_time_string, "%m-%d-%Y %H:%M:%S")
+            record_date_time = datetime.strptime(record_date_time_string, "%m-%d-%Y %H:%M:%S")
 
             blood_glucose_crud.blood_glucose_insert(
                 blood_glucose_crud.BloodGlucoseRecord(
@@ -379,10 +379,10 @@ def populate_meal_tables():
     for day in range(days_of_records):
         for meal in meals:
             meal_items_count = random.randint(0, 4)
-            record_date = (datetime.datetime.today() - datetime.timedelta(days=day)).strftime("%m-%d-%Y")
+            record_date = (datetime.today() - timedelta(days=day)).strftime("%m-%d-%Y")
             record_time = meal[1]
             record_date_time_string = record_date + " " + record_time
-            record_date_time = datetime.datetime.strptime(record_date_time_string, "%m-%d-%Y %H:%M:%S")
+            record_date_time = datetime.strptime(record_date_time_string, "%m-%d-%Y %H:%M:%S")
 
             meal_record = meal_crud.MealRecord(
                 meal=meal[0],
