@@ -11,6 +11,7 @@ class AllGraph(QDialog):
 		self.step_check = QCheckBox("Steps walked", self)
 		self.food_check = QCheckBox("Carbs ate", self)
 
+		# Adding comment to test push
 		self.BG_check.setChecked(True)
 		self.sleep_check.setChecked(True)
 		self.step_check.setChecked(True)
