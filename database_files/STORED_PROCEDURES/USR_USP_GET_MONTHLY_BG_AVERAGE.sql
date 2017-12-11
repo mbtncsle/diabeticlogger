@@ -10,6 +10,37 @@ CREATE PROC dbo.USR_USP_GET_MONTHLY_BG_AVERAGE
 )
 AS
 BEGIN
+	
+	    IF OBJECT_ID('tempdb.dbo.#BG') IS NOT NULL
+        DROP TABLE #BG;
+
+    SELECT bg.BloodGlucoseId,
+           Meal = REPLACE(REPLACE(bg.Meal, 'BEFORE ', ''), 'AFTER ', ''),
+           Mark = REPLACE(REPLACE(REPLACE(bg.Meal, ' DINNER', ''), ' BREAKFAST', ''), ' LUNCH', ''),
+           bg.Reading,
+           RecordDate = CAST(bg.RecordDate AS DATE),
+           RecordDateTime = CAST(bg.RecordDate AS DATETIME),
+           bg.Notes
+    INTO #BG
+    FROM dbo.BloodGlucose AS bg;
+
+	CREATE NONCLUSTERED INDEX [idx_p] ON #BG (Meal,Mark,RecordDate) INCLUDE(BloodGlucoseId)
+
+    IF OBJECT_ID('tempdb.dbo.#M') IS NOT NULL
+        DROP TABLE #M;
+
+    SELECT m.MealId,
+           Meal = REPLACE(REPLACE(m.Meal, 'BEFORE ', ''), 'AFTER ', ''),
+           Mark = REPLACE(REPLACE(REPLACE(m.Meal, ' DINNER', ''), ' BREAKFAST', ''), ' LUNCH', ''),
+           TotalCarbs = m.Reading,
+           RecordDate = CAST(m.RecordDate AS DATE),
+           RecordDateTime = CAST(m.RecordDate AS DATETIME),
+           m.Notes
+    INTO #M
+    FROM dbo.Meal AS m;
+
+	
+	CREATE NONCLUSTERED INDEX [idx_p] ON #M (Meal,Mark,RecordDate) INCLUDE(MealId)
 
     DECLARE @START_DATE DATE,
             @END_DATE DATE,
@@ -33,7 +64,7 @@ BEGIN
 
 
     SELECT @MONTHLY_AVERAGE = AVG(b.Reading)
-    FROM dbo.BG AS b
+    FROM #BG AS b
     WHERE b.RecordDate
           BETWEEN @START_DATE AND @END_DATE
           AND b.Meal = @MEAL

@@ -11,11 +11,54 @@ AS
 BEGIN
 
 
-  SET NOCOUNT ON
+    SET NOCOUNT ON;
 
-  --DECLARE @DAYS_local INT = --CAST(@DAYS AS INT)
+    --DECLARE @DAYS_local INT = --CAST(@DAYS AS INT)
+    IF OBJECT_ID('tempdb.dbo.#BG') IS NOT NULL
+        DROP TABLE #BG;
 
-  
+    SELECT bg.BloodGlucoseId,
+           Meal = CAST(REPLACE(REPLACE(bg.Meal, 'BEFORE ', ''), 'AFTER ', '') AS NVARCHAR(50)),
+           Mark = CAST(REPLACE(REPLACE(REPLACE(bg.Meal, ' DINNER', ''), ' BREAKFAST', ''), ' LUNCH', '') AS NVARCHAR(50)),
+           bg.Reading,
+           RecordDate = CAST(bg.RecordDate AS DATE),
+           RecordDateTime = CAST(bg.RecordDate AS DATETIME),
+           bg.Notes
+    INTO #BG
+    FROM dbo.BloodGlucose AS bg;
+
+    CREATE NONCLUSTERED INDEX [idx_p]
+    ON #BG
+    (
+        Meal,
+        Mark,
+        RecordDate
+    )
+    INCLUDE (BloodGlucoseId);
+
+    IF OBJECT_ID('tempdb.dbo.#M') IS NOT NULL
+        DROP TABLE #M;
+
+    SELECT m.MealId,
+           Meal = CAST(REPLACE(REPLACE(m.Meal, 'BEFORE ', ''), 'AFTER ', '') AS NVARCHAR(50)),
+           Mark = CAST(REPLACE(REPLACE(REPLACE(m.Meal, ' DINNER', ''), ' BREAKFAST', ''), ' LUNCH', '') AS NVARCHAR(50)),
+           TotalCarbs = m.Reading,
+           RecordDate = CAST(m.RecordDate AS DATE),
+           RecordDateTime = CAST(m.RecordDate AS DATETIME),
+           m.Notes
+    INTO #M
+    FROM dbo.Meal AS m;
+
+
+    CREATE NONCLUSTERED INDEX [idx_p]
+    ON #M
+    (
+        Meal,
+        Mark,
+        RecordDate
+    )
+    INCLUDE (MealId);
+
     DECLARE @BG_MESSAGE_INCREASE NVARCHAR(MAX)
         = 'Your last meal was <MEAL>, you consumed <CARB> carbs - increasing your BG level by <BG> mg/dl.';
     DECLARE @BG_MESSAGE_DECREASE NVARCHAR(MAX)
@@ -32,19 +75,21 @@ BEGIN
     IF OBJECT_ID('tempdb.dbo.#BG_DIFF') IS NOT NULL
         DROP TABLE #BG_DIFF;
 
-    SELECT TOP 1 af.RecordDate,
-           af.Meal,
-           DIFF = af.Reading - bef.Reading
+    SELECT TOP 1
+        af.RecordDate,
+        af.Meal,
+        DIFF = af.Reading - bef.Reading
     INTO #BG_DIFF
-    FROM dbo.BG AS bef
-        INNER JOIN dbo.BG AS af
+    FROM #BG AS bef
+        INNER JOIN #BG AS af
             ON af.RecordDate = bef.RecordDate
                AND af.Meal = bef.Meal
                AND af.Mark <> bef.Mark
     WHERE bef.Mark = 'BEFORE'
           AND af.Mark = 'AFTER'
-         -- AND af.RecordDate > GETDATE() - @DAYS_local 
-		 ORDER BY af.RecordDate DESC, bef.RecordDateTime DESC
+    -- AND af.RecordDate > GETDATE() - @DAYS_local 
+    ORDER BY af.RecordDate DESC,
+             bef.RecordDateTime DESC;
 
     IF OBJECT_ID('tempdb.dbo.#M_DIFF') IS NOT NULL
         DROP TABLE #M_DIFF;
@@ -56,7 +101,7 @@ BEGIN
            m.MealId
     INTO #M_DIFF
     FROM #BG_DIFF AS bd
-        INNER JOIN dbo.M AS m
+        INNER JOIN #M AS m
             ON m.RecordDate = bd.RecordDate
                AND m.Meal = bd.Meal;
 
@@ -129,4 +174,4 @@ BEGIN
 
 END;
 GO
-EXEC dbo.USR_USP_HOW_LAST_MEAL_AFFECTED_BG --@DAYS = '30'   -- date
+EXEC dbo.USR_USP_HOW_LAST_MEAL_AFFECTED_BG; --@DAYS = '30'   -- date
