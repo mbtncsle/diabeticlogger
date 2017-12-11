@@ -1,6 +1,6 @@
 from module_references import *
 
-
+# Modified by Tim Camp on 12/11/2017 to facilitate larger graph
 class MainWindow(QMainWindow):
 
     def __init__(self):

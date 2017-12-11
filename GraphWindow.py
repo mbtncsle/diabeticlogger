@@ -1,6 +1,7 @@
 from module_references import *
 
 
+# Modified by Tim Camp on 12/11/2017 to modify graph appearance
 class GraphWindow(QMdiSubWindow):
 
     def __init__(self):

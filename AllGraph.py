@@ -1,6 +1,7 @@
 from module_references import *
 
 
+# Modified by Tim Camp on 12/11/2017 to modify graph appearance
 # Class for the extra graph that can show all data against each other
 class AllGraph(QDialog):
     def __init__(self):
