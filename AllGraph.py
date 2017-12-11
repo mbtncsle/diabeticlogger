@@ -52,7 +52,8 @@ class AllGraph(QDialog):
 
 		for log in range(0, len(l)):
 			l[log] -= mini
-			l[log] /= maxi
+			if max > 0:
+				l[log] /= maxi
 
 		return l
 
@@ -75,7 +76,8 @@ class AllGraph(QDialog):
 				total = 0
 				for y in y_axis["BG"][i]:
 					total += y
-				total /= len(y_axis["BG"][i])
+				if len(y_axis["BG"][i]) > 0:
+					total /= len(y_axis["BG"][i])
 				y_axis["BG"][i] = total
 
 		if self.sleep_check.isChecked():
