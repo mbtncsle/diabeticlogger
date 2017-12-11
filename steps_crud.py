@@ -83,7 +83,7 @@ def steps_select_by_days(days):
     oldest_date = datetime.today() - timedelta(days=days)
 
     sql_statement = "SELECT " + table_name + "Id, Reading, RecordDate, Notes" + \
-                    " FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate DESC ;".format(
+                    " FROM " + table_name + " WHERE RecordDate > \'{0}\' ORDER BY RecordDate;".format(
                         oldest_date.strftime("%Y-%m-%d 00:00:00"))
 
     with db.Db() as cursor:

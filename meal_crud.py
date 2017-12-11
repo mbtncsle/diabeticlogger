@@ -119,8 +119,8 @@ def meal_select_by_days(days):
                     meal=row.Meal,
                     reading=row.Reading,
                     record_date=row.RecordDate,
-                    notes=row.Notes,
-                    meal_items=meal_item_crud.meal_items_select_by_meal_id(row.MealId)
+                    notes=row.Notes
+                    # meal_items=meal_item_crud.meal_items_select_by_meal_id(row.MealId)
                 )
             )
             row = cursor.fetchone()
