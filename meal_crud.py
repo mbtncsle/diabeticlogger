@@ -52,7 +52,7 @@ def meal_insert(meal_record):
     # Insert the meal item records
     for meal_item in meal_record.meal_items:
         meal_item.meal_id = return_id
-        meal_item.meal_item_insert(meal_item)
+        meal_item_crud.meal_item_insert(meal_item)
 
     return return_id
 
