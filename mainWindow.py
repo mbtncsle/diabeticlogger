@@ -42,10 +42,10 @@ class MainWindow(QMainWindow):
         self.oneMonth_qpb.setGeometry(260, 365, 105, 25)
         self.oneMonth_qpb.clicked.connect(self.days_button_pressed)
 
-        self.oneYear_qpb = QPushButton("1 Year", self)
-        self.oneYear_qpb.setToolTip("This button displays graph for data collected within the year")
-        self.oneYear_qpb.setGeometry(365, 365, 105, 25)
-        self.oneYear_qpb.clicked.connect(self.days_button_pressed)
+        # self.oneYear_qpb = QPushButton("1 Year", self)
+        # self.oneYear_qpb.setToolTip("This button displays graph for data collected within the year")
+        # self.oneYear_qpb.setGeometry(365, 365, 105, 25)
+        # self.oneYear_qpb.clicked.connect(self.days_button_pressed)
 
         self.graph_qpb = QPushButton("Graph", self)
         self.graph_qpb.setToolTip("This button will display a graphical representation of your blood glucose level")
@@ -131,8 +131,8 @@ class MainWindow(QMainWindow):
             self.previous_days = 7
         if self.sender().text() == "1 Month":
             self.previous_days = 30
-        if self.sender().text() == "1 Year":
-            self.previous_days = 365
+        # if self.sender().text() == "1 Year":
+        #     self.previous_days = 365
         self.update_data()
 
     @pyqtSlot()

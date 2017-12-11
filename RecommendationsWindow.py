@@ -48,7 +48,7 @@ class RecommendationsWindow(QMdiSubWindow):
 		
 		if self.data == self.blood_glucose:
 			is_bg_in_range(self)
-			get_montly_bg_average(self)
+			get_monthly_bg_average(self)
 			
 		elif self.data == self.food_list:
 			how_last_meal_affected_bg(self)
@@ -62,11 +62,11 @@ class RecommendationsWindow(QMdiSubWindow):
 			self.frame.layout().addWidget(QLabel(""))
 
 
-def get_montly_bg_average(self):
+def get_monthly_bg_average(self):
 	query= "SELECT TOP 1 READING, MEAL FROM BLOODGLUCOSE ORDER BY RecordDate DESC"
 	reading, meal = execute_sql_fetchone(query)
 	sql = "EXEC USR_USP_GET_MONTHLY_BG_AVERAGE @READING = " + str(reading) + ", @MEAL = '" + str(meal) + "'"
-	(recommendation,) = execute_sql_fetchone(sql)
+	(recommendation) = execute_sql_fetchone(sql)
 	self.frame.layout().addWidget(QLabel(str(recommendation)))
 
 def is_bg_in_range(self):
