@@ -66,8 +66,8 @@ class AllGraph(QDialog):
     # Update the view
     def update(self):
         previous_days = 30
-        y_axis = {"BG": [], "sleep": [], "steps": [], "food": []}
-        x_axis = {"BG": [], "sleep": [], "steps": [], "food": []}
+        y_axis = {"BG": [], "sleep": [], "steps": [], "food": [], "mid": []}
+        x_axis = {"BG": [], "sleep": [], "steps": [], "food": [], "mid": []}
 
         if self.BG_check.isChecked():
             for log in blood_glucose_crud.blood_glucose_select_by_days(previous_days):
@@ -146,8 +146,14 @@ class AllGraph(QDialog):
         for key in y_axis:
             y_axis[key] = self.get_percentage(y_axis[key])
 
-        colors = {"BG": "r-", "sleep": "b-", "steps": "g-", "food": "y-"}
-        labels = {"BG": "Blood Glucose", "sleep": "Sleep", "steps": "Steps", "food": "Carbs"}
+        for key in x_axis:
+            if len(x_axis[key]) > len(x_axis["mid"]):
+                x_axis["mid"] = x_axis[key]
+        for v in x_axis["mid"]:
+            y_axis["mid"].append(50)
+
+        colors = {"BG": "r", "sleep": "b", "steps": "g", "food": "y", "mid": "c"}
+        labels = {"BG": "Blood Glucose", "sleep": "Sleep", "steps": "Steps", "food": "Carbs", "mid": "Average"}
         self.graph.plot(x_axis, y_axis, "Percentage", "Date", colors, labels)
 
 
