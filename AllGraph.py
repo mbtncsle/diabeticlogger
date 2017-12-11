@@ -111,6 +111,12 @@ class AllGraph(QDialog):
                 else:
                     y_axis["steps"][x_axis["steps"].index(axis_date)] += log.reading
 
+            for i in range(0, len(x_axis["steps"])):
+                if x_axis["steps"][i] == "11/11/17":
+                    x_axis["steps"].pop(i)
+                    y_axis["steps"].pop(i)
+                    break
+
 
 
                 # d = (datetime.now() - log.record_date).days

@@ -119,6 +119,12 @@ class GraphWindow(QMdiSubWindow):
                     y_axis["data"].append([log.reading])
                 else:
                     y_axis["data"][x_axis["data"].index(axis_date)][0] += log.reading
+
+            for i in range(0, len(x_axis["data"])):
+                if x_axis["data"][i] == "11/11/17":
+                    x_axis["data"].pop(i)
+                    y_axis["data"].pop(i)
+                    break
         # Carbs
         else:
 
